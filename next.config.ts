@@ -1,7 +1,18 @@
 import type { NextConfig } from "next";
 
+const rawBasePath = process.env.NEXT_BASE_PATH?.trim();
+const normalizedBasePath = rawBasePath
+  ? `/${rawBasePath.replace(/^\/+|\/+$/g, "")}`
+  : undefined;
+
 const nextConfig: NextConfig = {
-  output: 'export'
+  output: "export",
+  ...(normalizedBasePath
+    ? {
+        basePath: normalizedBasePath,
+        assetPrefix: normalizedBasePath,
+      }
+    : {}),
 };
 
 export default nextConfig;

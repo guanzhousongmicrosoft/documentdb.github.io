@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import CommandSnippet from "./components/CommandSnippet";
+import { withBasePath } from "./services/sitePath";
 
 type CapabilityIconName =
   | "foundation"
@@ -458,8 +459,8 @@ export default function Home() {
                   }`}
                 >
                   <div className="relative h-8 w-full max-w-[128px] sm:h-10 sm:max-w-[136px]">
-                    <Image
-                      src={organization.src}
+                     <Image
+                      src={withBasePath(organization.src)}
                       alt={organization.name}
                       fill
                       unoptimized
