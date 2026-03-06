@@ -436,11 +436,10 @@ sudo dnf install postgresql${rpmPgVersion}-documentdb`;
 
         <section className="mt-8 rounded-xl border border-neutral-700 bg-neutral-800/70 p-5 sm:p-6">
           <div className="mb-5 max-w-2xl">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
+            <h2 className="mb-4 text-2xl font-bold text-white">
               3. Connect and try it
-            </p>
-            <h2 className="text-2xl font-bold text-white">Choose your next guide</h2>
-            <p className="mt-2 text-sm leading-6 text-gray-400">
+            </h2>
+            <p className="text-sm leading-6 text-gray-400">
               Once DocumentDB is running, use port 10260 and follow one of these guides to make
               your first connection.
             </p>
