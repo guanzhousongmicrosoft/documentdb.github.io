@@ -68,7 +68,7 @@ export default function Navbar() {
               href="/packages"
               className="text-gray-300 hover:text-blue-400 transition-colors duration-200 font-medium"
             >
-              Packages
+              Download
             </Link>
             <Link
               href="/blogs"
