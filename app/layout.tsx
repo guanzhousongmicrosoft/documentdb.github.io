@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = getMetadata({
   title: 'DocumentDB - Open Source Document Database', 
-  description: 'A powerful, scalable open-source document database solution. Built on the principles of transparency, developer freedom, and standardization, our mission is to build a MongoDB compatible open source document database based on PostgreSQL.',
+  description: 'A powerful, scalable open-source document database solution built on PostgreSQL for modern applications.',
 });
 
 export default function RootLayout({

@@ -1,9 +1,16 @@
 import Link from "next/link";
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { capitalCase } from 'change-case';
 import { getAllArticlePaths, getArticleByPath } from "../../../services/articleService";
 import ComingSoon from "../../../components/ComingSoon";
+import CommandSnippet from "../../../components/CommandSnippet";
 import Markdown from "../../../components/Markdown";
+
+const dockerQuickRunCommand = `docker run -dt --name documentdb \\
+  -p 10260:10260 \\
+  ghcr.io/documentdb/documentdb/documentdb-local:latest \\
+  --username <YOUR_USERNAME> \\
+  --password <YOUR_PASSWORD>`;
 
 export async function generateStaticParams() {
     const paths = getAllArticlePaths();
@@ -43,6 +50,11 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function ArticlePage({ params }: PageProps) {
     const { section, slug = [] } = await params;
+
+    if (section === 'getting-started' && slug[slug.length - 1] === 'prebuilt-packages') {
+        redirect('/docs/getting-started/packages');
+    }
+
     const articleData = getArticleByPath(section, slug);
 
     if (!articleData) {
@@ -56,6 +68,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
     // Use title from frontmatter if available, otherwise fall back to navigation title or section name
     const pageTitle = frontmatter.title || selectedNavItem?.title || section;
+    const showInstallPrimer = section === "getting-started" && file === "index";
 
     return (
         <div className="min-h-screen bg-neutral-900 relative overflow-hidden">
@@ -137,6 +150,47 @@ export default async function ArticlePage({ params }: PageProps) {
                     <div className="max-w-4xl">
                         {/* Coming Soon Component for coming-soon layout */}
                         {frontmatter.layout === 'coming-soon' && <ComingSoon />}
+
+                        {showInstallPrimer && (
+                            <section className="mb-8 rounded-xl border border-blue-500/30 bg-blue-500/5 p-5">
+                                <h2 className="text-xl font-semibold text-white">Install DocumentDB first</h2>
+                                <p className="mt-2 text-sm text-gray-300">
+                                    Start with Docker for the fastest setup, or choose Linux packages for persistent servers.
+                                </p>
+                                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                                    <div className="rounded-lg border border-neutral-700 bg-neutral-900/60 p-4">
+                                        <p className="mb-3 text-sm font-semibold text-white">Quick run with Docker</p>
+                                        <CommandSnippet command={dockerQuickRunCommand} label="Docker" />
+                                    </div>
+                                    <div className="rounded-lg border border-neutral-700 bg-neutral-900/60 p-4">
+                                        <p className="text-sm font-semibold text-white">Install from Linux packages</p>
+                                        <p className="mt-2 text-sm text-gray-400">
+                                            Use the package finder to generate the exact apt/rpm command for your distro, architecture, and PostgreSQL version.
+                                        </p>
+                                        <div className="mt-4 flex flex-wrap gap-3">
+                                            <Link
+                                                href="/docs/getting-started/docker"
+                                                className="inline-flex items-center justify-center rounded-md border border-neutral-600 px-4 py-2 text-sm font-semibold text-gray-200 transition-colors hover:border-neutral-500 hover:bg-neutral-800"
+                                            >
+                                                Docker guide
+                                            </Link>
+                                            <Link
+                                                href="/packages"
+                                                className="inline-flex items-center justify-center rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-400"
+                                            >
+                                                Open package finder
+                                            </Link>
+                                            <Link
+                                                href="/docs/getting-started/packages"
+                                                className="inline-flex items-center justify-center rounded-md border border-neutral-600 px-4 py-2 text-sm font-semibold text-gray-200 transition-colors hover:border-neutral-500 hover:bg-neutral-800"
+                                            >
+                                                Linux packages docs
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        )}
 
                         {/* Markdown Content */}
                         <Markdown content={content} />

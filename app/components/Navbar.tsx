@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+import { withBasePath } from "../services/sitePath";
 export default function Navbar() {
   return (
     <nav className="bg-neutral-900 shadow-sm border-b border-neutral-700 sticky top-0 z-50">
@@ -9,10 +11,13 @@ export default function Navbar() {
               href="/"
               className="text-2xl font-bold text-white flex items-center gap-2"
             >
-              <img
-                src="/images/DocumentDB Logo - background removed.png"
+              <Image
+                src={withBasePath("/images/DocumentDB Logo - background removed.png")}
                 alt="DocumentDB Logo"
-                className="w-12 h-12"
+                width={48}
+                height={48}
+                unoptimized
+                className="h-12 w-12"
               />
               DocumentDB
             </Link>
@@ -68,7 +73,7 @@ export default function Navbar() {
               href="/packages"
               className="text-gray-300 hover:text-blue-400 transition-colors duration-200 font-medium"
             >
-              Packages
+              Download
             </Link>
             <Link
               href="/blogs"
