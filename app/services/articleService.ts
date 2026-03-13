@@ -21,6 +21,10 @@ docker run -dt --name documentdb \\
 \`\`\`
 
 > Replace \`<YOUR_USERNAME>\` and \`<YOUR_PASSWORD>\` with your own credentials.
+>
+> DocumentDB Local loads built-in sample data into \`sampledb\` by default. See
+> [DocumentDB Local](/docs/documentdb-local) for \`--skip-init-data\`,
+> \`--init-data-path\`, and certificate options.
 
 ## Verify the container
 
@@ -70,6 +74,38 @@ sudo dnf install postgresql16-documentdb
 - [Python Setup Guide](/docs/getting-started/python-setup)
 `;
 
+const documentdbLocalDataInitializationContent = `## Data initialization
+
+DocumentDB Local starts with built-in sample data by default. The container creates a
+\`sampledb\` database with the \`users\`, \`products\`, \`orders\`, and \`analytics\`
+collections so you can explore queries right away.
+
+### Control initialization behavior
+
+| Requirement | Arg | Env | Default | Description |
+|---|---|---|---|---|
+| Skip built-in sample data | \`--skip-init-data\` | \`SKIP_INIT_DATA\` | \`false\` | Start without loading the default sample collections. |
+| Run custom initialization scripts | \`--init-data-path [PATH]\` | \`INIT_DATA_PATH\` | \`/init_doc_db.d\` | Execute every \`.js\` file in the mounted directory with \`mongosh\`. |
+
+The built-in sample dataset currently includes 5 users, 5 products, 4 orders, and 2
+analytics records.
+
+### Use custom initialization scripts
+
+\`\`\`bash
+docker run -dt --name documentdb \\
+  -p 10260:10260 \\
+  -v /path/to/init/scripts:/init_doc_db.d \\
+  ghcr.io/documentdb/documentdb/documentdb-local:latest \\
+  --username <YOUR_USERNAME> \\
+  --password <YOUR_PASSWORD> \\
+  --init-data-path /init_doc_db.d
+\`\`\`
+
+When \`--init-data-path\` is provided, DocumentDB Local skips the built-in sample data
+and runs only the scripts you mounted.
+`;
+
 function splitPrebuiltNavigation(section: string, links: Link[]): Link[] {
   if (section !== 'getting-started') {
     return links;
@@ -103,6 +139,21 @@ function updateGettingStartedIndexContent(content: string): string {
     /- \[Pre-built Packages\]\([^)]+\) - [^\n]+/i,
     '- [Docker](/docs/getting-started/docker) - Start DocumentDB locally with Docker\n- [Linux Packages](/docs/getting-started/packages) - Install via apt/rpm repositories'
   );
+}
+
+function updateDocumentDbLocalContent(content: string): string {
+  if (/## Data initialization/i.test(content)) {
+    return content;
+  }
+
+  if (/## Feature support/i.test(content)) {
+    return content.replace(
+      /## Feature support/i,
+      `${documentdbLocalDataInitializationContent}\n\n## Feature support`
+    );
+  }
+
+  return `${content}\n\n${documentdbLocalDataInitializationContent}`;
 }
 
 export function getArticleContent(): Article {
@@ -251,10 +302,15 @@ export function getArticleByPath(section: string, slug: string[] = []): {
 
   // Parse front matter
   const { data: frontmatter, content } = matter(rawContent);
-  const normalizedContent =
-    section === 'getting-started' && file === 'index'
-      ? updateGettingStartedIndexContent(content)
-      : content;
+  let normalizedContent = content;
+
+  if (section === 'getting-started' && file === 'index') {
+    normalizedContent = updateGettingStartedIndexContent(normalizedContent);
+  }
+
+  if (section === 'documentdb-local' && file === 'index') {
+    normalizedContent = updateDocumentDbLocalContent(normalizedContent);
+  }
 
   return {
     content: normalizedContent,

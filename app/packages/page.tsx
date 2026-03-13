@@ -10,8 +10,8 @@ type AptDistro = "ubuntu22" | "ubuntu24" | "deb11" | "deb12" | "deb13";
 type RpmDistro = "rhel8" | "rhel9";
 type AptArch = "amd64" | "arm64";
 type RpmArch = "x86_64" | "aarch64";
-type AptPgVersion = "16" | "17";
-type RpmPgVersion = "16" | "17";
+type AptPgVersion = "16" | "17" | "18";
+type RpmPgVersion = "16" | "17" | "18";
 
 const dockerCommand = `docker run -dt --name documentdb \\
   -p 10260:10260 \\
@@ -252,6 +252,7 @@ sudo dnf install postgresql${rpmPgVersion}-documentdb`;
                       >
                         <option value="16">16</option>
                         <option value="17">17</option>
+                        <option value="18">18</option>
                       </select>
                     </label>
                   ) : (
@@ -264,6 +265,7 @@ sudo dnf install postgresql${rpmPgVersion}-documentdb`;
                       >
                         <option value="16">16</option>
                         <option value="17">17</option>
+                        <option value="18">18</option>
                       </select>
                     </label>
                   )}
@@ -311,7 +313,7 @@ sudo dnf install postgresql${rpmPgVersion}-documentdb`;
                     <td className="px-3 py-3 font-semibold text-blue-300">APT</td>
                     <td className="px-3 py-3">Ubuntu 22.04/24.04, Debian 11/12/13</td>
                     <td className="px-3 py-3">amd64, arm64</td>
-                    <td className="px-3 py-3">16, 17</td>
+                    <td className="px-3 py-3">16, 17, 18</td>
                     <td className="px-3 py-3">
                       <code className="text-gray-200">postgresql-&lt;pg&gt;-documentdb</code>
                     </td>
@@ -322,7 +324,7 @@ sudo dnf install postgresql${rpmPgVersion}-documentdb`;
                       RHEL 8/9, Rocky, AlmaLinux, CentOS Stream
                     </td>
                     <td className="px-3 py-3">x86_64, aarch64</td>
-                    <td className="px-3 py-3">16, 17</td>
+                    <td className="px-3 py-3">16, 17, 18</td>
                     <td className="px-3 py-3">
                       <code className="text-gray-200">postgresql&lt;pg&gt;-documentdb</code>
                     </td>
@@ -345,8 +347,8 @@ sudo dnf install postgresql${rpmPgVersion}-documentdb`;
                 Use the commands below to discover available versions before pinning. Replace{" "}
                 <code className="text-gray-300">&lt;VERSION&gt;</code> with the version string
                 shown by the list command (e.g.{" "}
-                <code className="text-gray-300">0.108-0</code> for APT,{" "}
-                <code className="text-gray-300">0.108.0-1.el9</code> for RPM).
+                <code className="text-gray-300">0.109-0</code> for APT,{" "}
+                <code className="text-gray-300">0.109.0-1.el9</code> for RPM).
               </p>
               <div>
                 <p className="mb-1 text-xs font-semibold text-gray-400">APT — list then pin</p>
@@ -397,12 +399,16 @@ sudo dnf install postgresql${rpmPgVersion}-documentdb`;
               <p className="text-sm text-gray-400">
                 Individual <code className="text-gray-300">.deb</code> and{" "}
                 <code className="text-gray-300">.rpm</code> files are attached to each release on
-                GitHub. Package names follow the convention:
+                GitHub. Recent release examples:
               </p>
               <div className="rounded-md border border-neutral-700 bg-black p-3 text-xs text-green-400 sm:text-sm">
-                <div>ubuntu22.04-postgresql-16-documentdb_&lt;VERSION&gt;_amd64.deb</div>
-                <div className="mt-1">rhel9-postgresql16-documentdb-&lt;VERSION&gt;.el9.x86_64.rpm</div>
+                <div>ubuntu22.04-postgresql-18-documentdb_0.109-0_amd64.deb</div>
+                <div className="mt-1">rhel9-postgresql18-documentdb-0.109.0-1.el9.x86_64.rpm</div>
               </div>
+              <p className="text-xs text-gray-500">
+                Swap the distribution, PostgreSQL version, architecture, and version string to match
+                the exact asset you need.
+              </p>
               <a
                 href={allReleasesUrl}
                 target="_blank"
