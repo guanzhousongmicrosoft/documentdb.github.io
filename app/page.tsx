@@ -69,7 +69,7 @@ const capabilities = [
     eyebrow: "AI",
     title: "Vector search",
     description:
-      "Embeddings and similarity search powered by pg_vector.",
+      "Embeddings and similarity search powered by pgvector.",
     highlights: ["Embeddings", "Similarity"],
     icon: "vector" as const,
   },
@@ -107,6 +107,44 @@ const credibilityPoints = [
     detail: "representing 5 organizations",
   },
 ];
+
+const pressItems = [
+  {
+    name: "The Register",
+    href: "https://www.theregister.com/2025/01/27/microsoft_builds_open_source_document/",
+    headline: "Microsoft builds open source document database",
+    color: "red" as const,
+    logo: "/images/The Register Logo v2.png",
+  },
+  {
+    name: "Hacker News",
+    href: "https://news.ycombinator.com/item?id=42807210",
+    headline: "DocumentDB Open-Source Discussion",
+    color: "orange" as const,
+    logo: null,
+  },
+  {
+    name: "Phoronix",
+    href: "https://www.phoronix.com/news/Microsoft-OpenSource-DocumentDB",
+    headline: "Microsoft Announces Open-Source DocumentDB",
+    color: "green" as const,
+    logo: "/images/Phoronix Logo.jpg",
+  },
+  {
+    name: "Business Wire",
+    href: "https://www.businesswire.com/news/home/20250520124276/en/YugabyteDB-Extends-Support-for-Document-Databases-With-Postgres-Extension-DocumentDB",
+    headline: "YugabyteDB Extends Support for DocumentDB",
+    color: "indigo" as const,
+    logo: "/images/BusinessWire.png",
+  },
+];
+
+const pressColorMap = {
+  red: "border-red-500/30 bg-red-500/10 text-red-400 hover:border-red-400/50",
+  orange: "border-orange-500/30 bg-orange-500/10 text-orange-400 hover:border-orange-400/50",
+  green: "border-green-500/30 bg-green-500/10 text-green-400 hover:border-green-400/50",
+  indigo: "border-indigo-500/30 bg-indigo-500/10 text-indigo-400 hover:border-indigo-400/50",
+};
 
 const contributorLogos = [
   {
@@ -379,24 +417,27 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-b border-neutral-800 bg-black py-12 sm:py-14">
+      <section className="border-b border-neutral-800 bg-neutral-900/60 py-14 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-6 max-w-2xl">
-            <h2 className="mb-3 text-2xl font-bold text-white sm:text-3xl">
+          <div className="mb-8 max-w-3xl sm:mb-10">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-blue-300">
               Why DocumentDB
+            </p>
+            <h2 className="mb-4 text-3xl font-bold text-white sm:text-4xl">
+              Document flexibility meets PostgreSQL confidence
             </h2>
-            <p className="text-sm leading-6 text-gray-400 sm:text-base">
-              Document flexibility, PostgreSQL confidence, and open-source control.
+            <p className="text-base leading-7 text-gray-400 sm:text-lg">
+              Open-source control with the tools you already trust.
             </p>
           </div>
 
-          <div className="grid gap-3 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-3">
             {whyDocumentDB.map((item) => (
               <article
                 key={item.title}
-                className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4 sm:p-5"
+                className="group rounded-2xl border border-neutral-800 bg-neutral-900/80 p-5 transition hover:-translate-y-0.5 hover:border-blue-400/30 hover:bg-neutral-900 sm:p-6"
               >
-                <h3 className="mb-2 text-lg font-semibold text-white">
+                <h3 className="mb-2 text-xl font-semibold text-white">
                   {item.title}
                 </h3>
                 <p className="text-sm leading-6 text-gray-400">
@@ -470,6 +511,69 @@ export default function Home() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-neutral-800 bg-neutral-900/40 py-14 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-8 max-w-3xl">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-blue-300">
+              Press
+            </p>
+            <h2 className="mb-4 text-3xl font-bold text-white sm:text-4xl">
+              In the press
+            </h2>
+            <p className="text-base leading-7 text-gray-400 sm:text-lg">
+              What the industry is saying about DocumentDB.
+            </p>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {pressItems.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group flex flex-col rounded-2xl border p-5 transition hover:-translate-y-0.5 ${pressColorMap[item.color]}`}
+              >
+                <div className="mb-3 flex items-center gap-3">
+                  {item.logo ? (
+                    <div className="relative h-7 w-10 shrink-0">
+                      <Image
+                        src={withBasePath(item.logo)}
+                        alt={item.name}
+                        fill
+                        unoptimized
+                        className="object-contain"
+                      />
+                    </div>
+                  ) : (
+                    <svg className="h-7 w-7 shrink-0" viewBox="0 0 24 24" fill="none">
+                      <rect width="24" height="24" fill="#FF6600" rx="2" />
+                      <text
+                        x="12"
+                        y="16"
+                        fontFamily="Verdana, sans-serif"
+                        fontSize="12"
+                        fontWeight="bold"
+                        fill="white"
+                        textAnchor="middle"
+                      >
+                        Y
+                      </text>
+                    </svg>
+                  )}
+                  <span className="text-xs font-semibold uppercase tracking-wide">
+                    {item.name}
+                  </span>
+                </div>
+                <h3 className="text-sm font-semibold text-white transition group-hover:text-current">
+                  {item.headline}
+                </h3>
+              </a>
+            ))}
           </div>
         </div>
       </section>
