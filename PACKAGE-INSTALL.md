@@ -1,297 +1,164 @@
 # DocumentDB Package Installation
 
-Fast and simple installation of DocumentDB extension for PostgreSQL.
+Verified installation commands for the DocumentDB PostgreSQL extension.
 
-**Supported PostgreSQL Versions:** 16, 17, 18
+## What was validated
 
-## Install Commands
+- Repository-backed installs were exercised in Docker on Ubuntu 22.04, Ubuntu 24.04, Debian 11, Debian 12, Rocky Linux 8, and Rocky Linux 9.
+- Both `amd64`/`x86_64` and `arm64`/`aarch64` variants were checked.
+- PostgreSQL package variants `16`, `17`, and `18` were resolved successfully for the supported repository-backed combinations, with one exception: Debian 11 currently resolves PostgreSQL `16` and `17` only.
+- Debian 13 `.deb` assets are published on GitHub Releases, but the APT repository does **not** currently publish a `deb13` component, so Debian 13 should use direct downloads for now.
 
-### Ubuntu & Debian (AMD64 & ARM64)
-```bash
-curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/documentdb-archive-keyring.gpg
-echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable main" | sudo tee /etc/apt/sources.list.d/documentdb.list
-sudo apt update
+## Supported PostgreSQL Versions
 
-# Install latest version for PostgreSQL 16 (recommended)
-sudo apt install postgresql-16-documentdb
-```
+- Ubuntu 22.04 / 24.04: 16, 17, 18
+- Debian 11: 16, 17
+- Debian 12: 16, 17, 18
+- RHEL-family 8 / 9: 16, 17, 18
 
-### RHEL & CentOS (x86_64 & aarch64)
-```bash
-# Enable CRB repository (required for PostGIS dependencies)
-sudo dnf install -y dnf-plugins-core
-sudo dnf config-manager --set-enabled crb
+## Repository-backed package installs
 
-# Import GPG key
-sudo rpm --import https://documentdb.io/documentdb-archive-keyring.gpg
-
-# Add repository (RHEL/Rocky 9)
-cat <<EOF | sudo tee /etc/yum.repos.d/documentdb.repo
-[documentdb]
-name=DocumentDB PostgreSQL Extension Repository
-baseurl=https://documentdb.io/rpm/rhel9
-enabled=1
-gpgcheck=1
-gpgkey=https://documentdb.io/documentdb-archive-keyring.gpg
-EOF
-
-# Install latest version for PostgreSQL 16 (recommended)
-sudo dnf install postgresql16-documentdb
-
-```
-
-**Note:** CRB (CodeReady Builder) repository is required for PostGIS/GDAL dependencies. PostgreSQL 15 RPM packages may be available in future releases.
-
-## Version Pinning
-
-You can install either the latest version or pin to a specific DocumentDB version:
-
-### APT (Debian/Ubuntu)
-```bash
-# Install latest version (recommended - gets updates automatically)
-sudo apt install postgresql-16-documentdb
-
-# Pin to specific version (won't auto-update)
-sudo apt install postgresql-16-documentdb=0.109-0
-
-# List all available versions
-apt-cache madison postgresql-16-documentdb
-```
-
-### YUM/DNF (RHEL/CentOS)
-```bash
-# Install latest version (recommended - gets updates automatically)
-sudo dnf install postgresql16-documentdb
-
-# Pin to specific version (won't auto-update)
-sudo dnf install postgresql16-documentdb-0.109.0-1.el9
-
-# List all available versions
-dnf --showduplicates list postgresql16-documentdb
-```
-
-## Version & Architecture Support
-
-### Architecture Support
-
-**APT Packages (DEB):**
-- ✅ AMD64/x86_64 (Intel/AMD 64-bit processors)
-- ✅ ARM64/aarch64 (Apple M1/M2, AWS Graviton, Raspberry Pi, etc.)
-
-**YUM Packages (RPM):**
-- ✅ x86_64 (Intel/AMD 64-bit processors)
-- ✅ aarch64 (ARM64 processors - AWS Graviton, etc.)
-
-### OS Distribution Support
-
-**Debian/Ubuntu (APT):**
-- Ubuntu 22.04 (Jammy)
-- Ubuntu 24.04 (Noble)
-- Debian 11 (Bullseye)
-- Debian 12 (Bookworm)
-- Debian 13 (Trixie)
-
-**RHEL-based distributions (YUM/DNF):**
-- RHEL 8/9
-- Rocky Linux 8/9
-- AlmaLinux 8/9
-- CentOS Stream 8/9
-
-## Quick Install (Skip GPG Verification)
-
-**⚠️ Warning:** Skipping GPG verification is not recommended for production environments.
-
-### Ubuntu & Debian
-```bash
-echo "deb [arch=amd64,arm64 trusted=yes] https://documentdb.io/deb stable main" | sudo tee /etc/apt/sources.list.d/documentdb.list
-sudo apt update
-sudo apt install postgresql-16-documentdb
-```
-
-### RHEL & CentOS  
-```bash
-cat <<EOF | sudo tee /etc/yum.repos.d/documentdb.repo
-[documentdb]
-name=DocumentDB PostgreSQL Extension Repository
-baseurl=https://documentdb.io/rpm/rhel9
-enabled=1
-gpgcheck=0
-EOF
-sudo dnf install postgresql16-documentdb
-```
-
-## Distribution-Specific Installation
+These commands install the required PostgreSQL upstream repositories first, then add the DocumentDB package repository, and finally install the DocumentDB extension package.
 
 ### Ubuntu 22.04 (Jammy)
+
 ```bash
-curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/documentdb-archive-keyring.gpg
-echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable ubuntu22" | sudo tee /etc/apt/sources.list.d/documentdb.list
-sudo apt update && sudo apt install postgresql-16-documentdb
+sudo apt update && \
+sudo apt install -y curl ca-certificates gnupg && \
+curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor --yes -o /usr/share/keyrings/postgresql.gpg && \
+echo "deb [signed-by=/usr/share/keyrings/postgresql.gpg] https://apt.postgresql.org/pub/repos/apt jammy-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null && \
+curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor --yes -o /usr/share/keyrings/documentdb-archive-keyring.gpg && \
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable ubuntu22" | sudo tee /etc/apt/sources.list.d/documentdb.list >/dev/null && \
+sudo apt update && \
+sudo apt install -y postgresql-16-documentdb
 ```
 
 ### Ubuntu 24.04 (Noble)
+
 ```bash
-curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/documentdb-archive-keyring.gpg
-echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable ubuntu24" | sudo tee /etc/apt/sources.list.d/documentdb.list
-sudo apt update && sudo apt install postgresql-16-documentdb
+sudo apt update && \
+sudo apt install -y curl ca-certificates gnupg && \
+curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor --yes -o /usr/share/keyrings/postgresql.gpg && \
+echo "deb [signed-by=/usr/share/keyrings/postgresql.gpg] https://apt.postgresql.org/pub/repos/apt noble-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null && \
+curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor --yes -o /usr/share/keyrings/documentdb-archive-keyring.gpg && \
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable ubuntu24" | sudo tee /etc/apt/sources.list.d/documentdb.list >/dev/null && \
+sudo apt update && \
+sudo apt install -y postgresql-16-documentdb
 ```
 
 ### Debian 11 (Bullseye)
+
 ```bash
-curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/documentdb-archive-keyring.gpg
-echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable deb11" | sudo tee /etc/apt/sources.list.d/documentdb.list
-sudo apt update && sudo apt install postgresql-16-documentdb
+sudo apt update && \
+sudo apt install -y curl ca-certificates gnupg && \
+curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor --yes -o /usr/share/keyrings/postgresql.gpg && \
+echo "deb [signed-by=/usr/share/keyrings/postgresql.gpg] https://apt.postgresql.org/pub/repos/apt bullseye-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null && \
+curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor --yes -o /usr/share/keyrings/documentdb-archive-keyring.gpg && \
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable deb11" | sudo tee /etc/apt/sources.list.d/documentdb.list >/dev/null && \
+sudo apt update && \
+sudo apt install -y postgresql-16-documentdb
 ```
 
 ### Debian 12 (Bookworm)
+
 ```bash
-curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/documentdb-archive-keyring.gpg
-echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable deb12" | sudo tee /etc/apt/sources.list.d/documentdb.list
-sudo apt update && sudo apt install postgresql-16-documentdb
+sudo apt update && \
+sudo apt install -y curl ca-certificates gnupg && \
+curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor --yes -o /usr/share/keyrings/postgresql.gpg && \
+echo "deb [signed-by=/usr/share/keyrings/postgresql.gpg] https://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null && \
+curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor --yes -o /usr/share/keyrings/documentdb-archive-keyring.gpg && \
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable deb12" | sudo tee /etc/apt/sources.list.d/documentdb.list >/dev/null && \
+sudo apt update && \
+sudo apt install -y postgresql-16-documentdb
 ```
 
-### Debian 13 (Trixie)
+### RHEL / Rocky / AlmaLinux / CentOS Stream 8
+
 ```bash
-curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/documentdb-archive-keyring.gpg
-echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable deb13" | sudo tee /etc/apt/sources.list.d/documentdb.list
-sudo apt update && sudo apt install postgresql-16-documentdb
+sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
+sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-$(uname -m)/pgdg-redhat-repo-latest.noarch.rpm && \
+sudo dnf -qy module disable postgresql && \
+sudo dnf install -y dnf-plugins-core && \
+(sudo dnf config-manager --set-enabled crb || \
+ sudo dnf config-manager --set-enabled powertools || \
+ sudo dnf config-manager --set-enabled codeready-builder-for-rhel-8-$(uname -m)-rpms) && \
+sudo rpm --import https://documentdb.io/documentdb-archive-keyring.gpg && \
+printf '%s\n' \
+  '[documentdb]' \
+  'name=DocumentDB Repository' \
+  'baseurl=https://documentdb.io/rpm/rhel8' \
+  'enabled=1' \
+  'gpgcheck=1' \
+  'gpgkey=https://documentdb.io/documentdb-archive-keyring.gpg' | sudo tee /etc/yum.repos.d/documentdb.repo >/dev/null && \
+sudo dnf install -y postgresql16-documentdb
 ```
 
-### RHEL/Rocky/AlmaLinux/CentOS Stream 8
+### RHEL / Rocky / AlmaLinux / CentOS Stream 9
+
 ```bash
-# Enable CRB repository (required for PostGIS dependencies)
-sudo dnf install -y dnf-plugins-core
-sudo dnf config-manager --set-enabled crb
-
-sudo rpm --import https://documentdb.io/documentdb-archive-keyring.gpg
-cat <<EOF | sudo tee /etc/yum.repos.d/documentdb.repo
-[documentdb]
-name=DocumentDB PostgreSQL Extension Repository
-baseurl=https://documentdb.io/rpm/rhel8
-enabled=1
-gpgcheck=1
-gpgkey=https://documentdb.io/documentdb-archive-keyring.gpg
-EOF
-sudo dnf install postgresql16-documentdb
+sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-$(uname -m)/pgdg-redhat-repo-latest.noarch.rpm && \
+sudo dnf -qy module disable postgresql && \
+sudo dnf install -y dnf-plugins-core && \
+(sudo dnf config-manager --set-enabled crb || \
+ sudo dnf config-manager --set-enabled powertools || \
+ sudo dnf config-manager --set-enabled codeready-builder-for-rhel-9-$(uname -m)-rpms) && \
+sudo rpm --import https://documentdb.io/documentdb-archive-keyring.gpg && \
+printf '%s\n' \
+  '[documentdb]' \
+  'name=DocumentDB Repository' \
+  'baseurl=https://documentdb.io/rpm/rhel9' \
+  'enabled=1' \
+  'gpgcheck=1' \
+  'gpgkey=https://documentdb.io/documentdb-archive-keyring.gpg' | sudo tee /etc/yum.repos.d/documentdb.repo >/dev/null && \
+sudo dnf install -y postgresql16-documentdb
 ```
 
-### RHEL/Rocky/AlmaLinux/CentOS Stream 9
+## Installing PostgreSQL 17 or 18 instead
+
+Swap the package name at the end of the command:
+
+- APT: `postgresql-17-documentdb` or `postgresql-18-documentdb`
+- RPM: `postgresql17-documentdb` or `postgresql18-documentdb`
+
+> Debian 11 currently supports PostgreSQL `16` and `17` in the repository-backed install flow. PostgreSQL `18` on Debian 11 is blocked by the missing `postgresql-18-postgis-3` dependency in the upstream Bullseye packages.
+
+## Version pinning
+
+Run the repository setup for your distro first, then use these commands:
+
+### APT
+
 ```bash
-# Enable CRB repository (required for PostGIS dependencies)
-sudo dnf install -y dnf-plugins-core
-sudo dnf config-manager --set-enabled crb
-
-sudo rpm --import https://documentdb.io/documentdb-archive-keyring.gpg
-cat <<EOF | sudo tee /etc/yum.repos.d/documentdb.repo
-[documentdb]
-name=DocumentDB PostgreSQL Extension Repository
-baseurl=https://documentdb.io/rpm/rhel9
-enabled=1
-gpgcheck=1
-gpgkey=https://documentdb.io/documentdb-archive-keyring.gpg
-EOF
-sudo dnf install postgresql16-documentdb
+apt-cache madison postgresql-16-documentdb
+sudo apt install postgresql-16-documentdb=<VERSION>
 ```
 
-## Fix Common Issues
+### RPM
 
-### Repository not found
 ```bash
-sudo apt update          # Ubuntu/Debian
-sudo yum clean all       # RHEL/CentOS
+dnf --showduplicates list postgresql16-documentdb
+sudo dnf install postgresql16-documentdb-<VERSION>
 ```
 
-### Package not found
-```bash
-apt search documentdb    # Ubuntu/Debian
-yum search documentdb    # RHEL/CentOS
+## Direct downloads
+
+GitHub Releases contains `.deb` and `.rpm` assets for every published combination, including Debian 13 release assets.
+
+Examples:
+
+```text
+ubuntu22.04-postgresql-18-documentdb_0.109-0_amd64.deb
+deb13-postgresql-18-documentdb_0.109-0_amd64.deb
+rhel9-postgresql18-documentdb-0.109.0-1.el9.x86_64.rpm
 ```
 
-### Check installation
-```bash
-# Ubuntu/Debian - List installed packages
-dpkg -l "*documentdb*"
+- GitHub Releases: https://github.com/documentdb/documentdb/releases
+- Release metadata: https://documentdb.io/packages/release-info.json
 
-# Ubuntu/Debian - Show specific package version
-apt-cache policy postgresql-16-documentdb
+## Notes
 
-# RHEL/CentOS - List installed packages
-rpm -qa "*documentdb*"
-
-# RHEL/CentOS - Show specific package version
-rpm -qi postgresql16-documentdb
-```
-
-## Repository Structure
-
-### APT Repository Layout (Multi-Architecture)
-```
-https://documentdb.github.io/
-├── deb/
-│   ├── dists/stable/
-│   │   ├── main/binary-amd64/         # Default AMD64 packages
-│   │   ├── main/binary-arm64/         # Default ARM64 packages  
-│   │   ├── ubuntu22/binary-amd64/     # Ubuntu 22.04 AMD64
-│   │   ├── ubuntu22/binary-arm64/     # Ubuntu 22.04 ARM64
-│   │   ├── ubuntu24/binary-amd64/     # Ubuntu 24.04 AMD64
-│   │   └── ubuntu24/binary-arm64/     # Ubuntu 24.04 ARM64
-│   ├── deb11/dists/stable/main/       # Debian 11 (both archs)
-│   ├── deb12/dists/stable/main/       # Debian 12 (both archs)
-│   └── deb13/dists/stable/main/       # Debian 13 (both archs)
-└── documentdb-archive-keyring.gpg     # GPG public key
-```
-
-### YUM Repository Layout (Multi-Architecture)
-```
-https://documentdb.github.io/
-├── rpm/
-│   ├── rhel8/
-│   │   ├── repodata/                  # Repository metadata
-│   │   └── packages/                  # RPM files (x86_64 & aarch64)
-│   └── rhel9/
-│       ├── repodata/                  # Repository metadata
-│       └── packages/                  # RPM files (x86_64 & aarch64)
-└── documentdb-archive-keyring.gpg     # GPG public key
-```
-
-### Package Locations
-```
-https://documentdb.io/
-└── packages/                          # All packages (direct download)
-    # Example DEB packages (version 0.109-0)
-    ├── deb11-postgresql-16-documentdb_0.109-0_amd64.deb
-    ├── deb11-postgresql-16-documentdb_0.109-0_arm64.deb
-    ├── deb12-postgresql-17-documentdb_0.109-0_amd64.deb
-    ├── deb12-postgresql-17-documentdb_0.109-0_arm64.deb
-    ├── deb13-postgresql-18-documentdb_0.109-0_amd64.deb
-    ├── deb13-postgresql-18-documentdb_0.109-0_arm64.deb
-    ├── ubuntu22.04-postgresql-18-documentdb_0.109-0_amd64.deb
-    ├── ubuntu24.04-postgresql-18-documentdb_0.109-0_arm64.deb
-    # Example RPM packages (version 0.109.0-1) - x86_64 and aarch64
-    ├── rhel8-postgresql16-documentdb-0.109.0-1.el8.x86_64.rpm
-    ├── rhel8-postgresql16-documentdb-0.109.0-1.el8.aarch64.rpm
-    ├── rhel9-postgresql18-documentdb-0.109.0-1.el9.x86_64.rpm
-    └── rhel9-postgresql18-documentdb-0.109.0-1.el9.aarch64.rpm
-```
-
-## Direct Downloads
-
-**Repository packages:** https://documentdb.io/packages/
-
-**GitHub releases:** https://github.com/documentdb/documentdb/releases
-
-## Package Naming Convention
-
-### DEB Packages
-- Format: `{distribution}-postgresql-{PG_VERSION}-documentdb_{DOCUMENTDB_VERSION}_arch.deb`
-- Example: `ubuntu22.04-postgresql-16-documentdb_0.109-0_amd64.deb`
-- Debug symbols: `{distribution}-postgresql-{PG_VERSION}-documentdb-dbgsym_{DOCUMENTDB_VERSION}_arch.deb`
-
-### RPM Packages
-- Format: `rhel{RHEL_VERSION}-postgresql{PG_VERSION}-documentdb-{DOCUMENTDB_VERSION}-1.el{RHEL_VERSION}.arch.rpm`
-- Example: `rhel9-postgresql16-documentdb-0.109.0-1.el9.x86_64.rpm`
-
-## Release Information
-
-The repository includes a `release-info.json` file with metadata about available packages:
-- https://documentdb.io/packages/release-info.json
+- The APT repository currently publishes components for `ubuntu22`, `ubuntu24`, `deb11`, and `deb12`.
+- Debian 13 assets exist on GitHub Releases, but the APT repository component is not published yet.
+- Debian 11 PostgreSQL 18 assets exist, but the upstream Bullseye PostGIS dependency is not currently installable from PGDG.
+- The RPM flow depends on EPEL plus PostgreSQL's upstream RPM repository because DocumentDB depends on PostgreSQL, `pg_cron`, `pgvector`, PostGIS, and `rum`.

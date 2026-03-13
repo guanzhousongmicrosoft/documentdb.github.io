@@ -4,6 +4,7 @@ import yaml from 'js-yaml';
 import matter from 'gray-matter';
 import { Article } from '../types/Article';
 import { Link } from '../types/Link';
+import { buildAptInstallCommand, buildRpmInstallCommand } from '../lib/packageInstall';
 
 const articlesDirectory = path.join(process.cwd(), 'articles');
 const dockerGuideContent = `# Docker
@@ -48,23 +49,18 @@ Install DocumentDB on Linux hosts with apt/rpm packages.
 
 Use the [Package Finder](/packages) to generate the exact install command for your distro, architecture, and PostgreSQL version.
 
+> The repository-backed install commands currently cover Ubuntu 22.04/24.04, Debian 11/12, and RHEL-family 8/9 systems. Debian 13 packages are available as direct downloads from GitHub Releases while the APT repository component is being published. Debian 11 currently resolves PostgreSQL 16 and 17 in the repository-backed flow.
+
 ## APT example
 
 \`\`\`bash
-curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/documentdb-archive-keyring.gpg && \\
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable ubuntu24" | sudo tee /etc/apt/sources.list.d/documentdb.list && \\
-sudo apt update && \\
-sudo apt install postgresql-16-documentdb
+${buildAptInstallCommand('ubuntu24', 'amd64', '16')}
 \`\`\`
 
 ## RPM example
 
 \`\`\`bash
-sudo dnf install -y dnf-plugins-core && \\
-sudo dnf config-manager --set-enabled crb && \\
-sudo rpm --import https://documentdb.io/documentdb-archive-keyring.gpg && \\
-printf '%s\\n' '[documentdb]' 'name=DocumentDB Repository' 'baseurl=https://documentdb.io/rpm/rhel9' 'enabled=1' 'gpgcheck=1' 'gpgkey=https://documentdb.io/documentdb-archive-keyring.gpg' | sudo tee /etc/yum.repos.d/documentdb.repo >/dev/null && \\
-sudo dnf install postgresql16-documentdb
+${buildRpmInstallCommand('rhel9', 'x86_64', '16')}
 \`\`\`
 
 ## Next steps

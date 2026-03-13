@@ -1,36 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CommandSnippet from "../components/CommandSnippet";
+import {
+  aptTargetPgVersions,
+  aptTargetLabels,
+  buildAptInstallCommand,
+  buildRpmInstallCommand,
+  type AptArch,
+  type AptDistro,
+  type AptPgVersion,
+  type RpmArch,
+  type RpmDistro,
+  type RpmPgVersion,
+  rpmTargetLabels,
+} from "../lib/packageInstall";
 
 type InstallMethod = "docker" | "packages";
 type PackageFamily = "apt" | "rpm";
-type AptDistro = "ubuntu22" | "ubuntu24" | "deb11" | "deb12" | "deb13";
-type RpmDistro = "rhel8" | "rhel9";
-type AptArch = "amd64" | "arm64";
-type RpmArch = "x86_64" | "aarch64";
-type AptPgVersion = "16" | "17" | "18";
-type RpmPgVersion = "16" | "17" | "18";
 
 const dockerCommand = `docker run -dt --name documentdb \\
   -p 10260:10260 \\
   ghcr.io/documentdb/documentdb/documentdb-local:latest \\
   --username <YOUR_USERNAME> \\
   --password <YOUR_PASSWORD>`;
-
-const aptTargetLabels: Record<AptDistro, string> = {
-  ubuntu22: "Ubuntu 22.04 (Jammy)",
-  ubuntu24: "Ubuntu 24.04 (Noble)",
-  deb11: "Debian 11 (Bullseye)",
-  deb12: "Debian 12 (Bookworm)",
-  deb13: "Debian 13 (Trixie)",
-};
-
-const rpmTargetLabels: Record<RpmDistro, string> = {
-  rhel8: "RHEL 8 / Rocky 8 / AlmaLinux 8 / CentOS Stream 8",
-  rhel9: "RHEL 9 / Rocky 9 / AlmaLinux 9 / CentOS Stream 9",
-};
 
 const nextGuides = [
   {
@@ -66,22 +60,16 @@ export default function PackagesPage() {
   const [rpmArch, setRpmArch] = useState<RpmArch>("x86_64");
   const [aptPgVersion, setAptPgVersion] = useState<AptPgVersion>("16");
   const [rpmPgVersion, setRpmPgVersion] = useState<RpmPgVersion>("16");
+  const availableAptPgVersions = aptTargetPgVersions[aptTarget];
 
-  const aptCommand = `curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/documentdb-archive-keyring.gpg && \\
-echo "deb [arch=${aptArch} signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable ${aptTarget}" | sudo tee /etc/apt/sources.list.d/documentdb.list && \\
-sudo apt update && \\
-sudo apt install postgresql-${aptPgVersion}-documentdb`;
-  const rpmCommand = `sudo dnf install -y dnf-plugins-core && \\
-sudo dnf config-manager --set-enabled crb && \\
-sudo rpm --import https://documentdb.io/documentdb-archive-keyring.gpg && \\
-printf '%s\\n' \\
-  '[documentdb]' \\
-  'name=DocumentDB Repository' \\
-  'baseurl=https://documentdb.io/rpm/${rpmTarget}' \\
-  'enabled=1' \\
-  'gpgcheck=1' \\
-  'gpgkey=https://documentdb.io/documentdb-archive-keyring.gpg' | sudo tee /etc/yum.repos.d/documentdb.repo >/dev/null && \\
-sudo dnf install postgresql${rpmPgVersion}-documentdb`;
+  useEffect(() => {
+    if (!availableAptPgVersions.includes(aptPgVersion)) {
+      setAptPgVersion(availableAptPgVersions[availableAptPgVersions.length - 1]);
+    }
+  }, [aptPgVersion, availableAptPgVersions]);
+
+  const aptCommand = buildAptInstallCommand(aptTarget, aptArch, aptPgVersion);
+  const rpmCommand = buildRpmInstallCommand(rpmTarget, rpmArch, rpmPgVersion);
   const selectedPackageName =
     packageFamily === "apt"
       ? `postgresql-${aptPgVersion}-documentdb`
@@ -99,8 +87,8 @@ sudo dnf install postgresql${rpmPgVersion}-documentdb`;
           </h1>
           <p className="mx-auto max-w-3xl text-lg text-gray-300">
             Choose Docker for the fastest local setup, or Linux packages for managed host
-            installations. All packages are GPG-signed and served from the official DocumentDB
-            repository.
+            installations. The generated package commands also configure the PostgreSQL
+            dependency repositories required by DocumentDB.
           </p>
           <div className="mt-4 flex flex-wrap justify-center gap-3 text-sm">
             <span className="rounded-full border border-green-500/30 bg-green-500/20 px-3 py-1 text-green-300">
@@ -250,9 +238,11 @@ sudo dnf install postgresql${rpmPgVersion}-documentdb`;
                         onChange={(event) => setAptPgVersion(event.target.value as AptPgVersion)}
                         className="mt-1 w-full rounded-md border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-gray-100"
                       >
-                        <option value="16">16</option>
-                        <option value="17">17</option>
-                        <option value="18">18</option>
+                        {availableAptPgVersions.map((pgVersion) => (
+                          <option key={pgVersion} value={pgVersion}>
+                            {pgVersion}
+                          </option>
+                        ))}
                       </select>
                     </label>
                   ) : (
@@ -280,6 +270,19 @@ sudo dnf install postgresql${rpmPgVersion}-documentdb`;
                 Target: {selectedTargetText} · Architecture: {selectedArchText} · package name{" "}
                 <code className="text-gray-300">{selectedPackageName}</code>
               </p>
+              <p className="mt-2 text-sm text-gray-400">
+                The generated command adds the PostgreSQL upstream repositories that provide
+                PostgreSQL, <code className="text-gray-300">pg_cron</code>,{" "}
+                <code className="text-gray-300">pgvector</code>, PostGIS, and{" "}
+                <code className="text-gray-300">rum</code>.
+              </p>
+              {packageFamily === "apt" ? (
+                <p className="mt-2 text-sm text-amber-300">
+                  Debian 13 packages are currently available from GitHub Releases as direct
+                  downloads while the APT repository component is being published. Debian 11
+                  currently supports PostgreSQL 16 and 17 in the repository-backed flow.
+                </p>
+              ) : null}
               <div className="mt-4">
                 <Link
                   href="/docs/getting-started/packages"
@@ -311,9 +314,9 @@ sudo dnf install postgresql${rpmPgVersion}-documentdb`;
                 <tbody className="text-gray-300">
                   <tr className="border-b border-neutral-800">
                     <td className="px-3 py-3 font-semibold text-blue-300">APT</td>
-                    <td className="px-3 py-3">Ubuntu 22.04/24.04, Debian 11/12/13</td>
+                    <td className="px-3 py-3">Ubuntu 22.04/24.04, Debian 11/12</td>
                     <td className="px-3 py-3">amd64, arm64</td>
-                    <td className="px-3 py-3">16, 17, 18</td>
+                    <td className="px-3 py-3">16, 17, 18 (Debian 11: 16, 17)</td>
                     <td className="px-3 py-3">
                       <code className="text-gray-200">postgresql-&lt;pg&gt;-documentdb</code>
                     </td>
@@ -334,6 +337,10 @@ sudo dnf install postgresql${rpmPgVersion}-documentdb`;
               <p className="mt-3 text-xs text-gray-400">
                 Use Package Finder above to generate the exact command for your selected
                 target instead of scanning all combinations manually.
+              </p>
+              <p className="mt-2 text-xs text-gray-500">
+                Debian 13 packages are published as direct <code>.deb</code> assets on GitHub
+                Releases until the APT repository component is available.
               </p>
             </div>
           </details>
@@ -403,6 +410,7 @@ sudo dnf install postgresql${rpmPgVersion}-documentdb`;
               </p>
               <div className="rounded-md border border-neutral-700 bg-black p-3 text-xs text-green-400 sm:text-sm">
                 <div>ubuntu22.04-postgresql-18-documentdb_0.109-0_amd64.deb</div>
+                <div className="mt-1">deb13-postgresql-18-documentdb_0.109-0_amd64.deb</div>
                 <div className="mt-1">rhel9-postgresql18-documentdb-0.109.0-1.el9.x86_64.rpm</div>
               </div>
               <p className="text-xs text-gray-500">
