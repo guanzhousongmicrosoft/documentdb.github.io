@@ -33,8 +33,6 @@ jobs:
   build-validation:
     name: Validate Next.js build
     runs-on: ubuntu-latest
-    env:
-      BUNDLE_FORCE_RUBY_PLATFORM: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5

@@ -6,7 +6,7 @@
     "dev": "npm run compile && next dev --turbopack",
     "build": "npm run build:next && npm run build:blogs",
     "build:next": "npm run compile && next build --turbopack",
-    "build:blogs": "BUNDLE_FORCE_RUBY_PLATFORM=true bundle exec jekyll build --config blogs/_config.yml --source blogs --destination out/blogs --baseurl \"${JEKYLL_BASE_PATH:-/blogs}\"",
+    "build:blogs": "bundle exec jekyll build --config blogs/_config.yml --source blogs --destination out/blogs --baseurl \"${JEKYLL_BASE_PATH:-/blogs}\"",
     "compile": "npm run compile:clean && npm run compile:content",
     "compile:content": "tsx scripts/compile-content.tsx",
     "compile:clean": "tsx scripts/compile-clean.tsx",

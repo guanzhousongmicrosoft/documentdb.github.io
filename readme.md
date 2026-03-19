@@ -27,7 +27,7 @@ Get started by cloning and running this repository locally.
 1. Install Ruby dependencies:
 
     ```bash
-    BUNDLE_FORCE_RUBY_PLATFORM=true bundle install
+    bundle install
     ```
 
 1. Start the Next.js development server:
