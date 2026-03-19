@@ -55,9 +55,49 @@ We welcome contributions to improve the DocumentDB website, whether it's blog po
 
 Blog posts are managed locally in this repository. Contribute directly through a pull request to this repository.
 
-1. Open [blogs/_data/posts.yml](blogs/_data/posts.yml)
+You can publish blog content in two ways:
 
-1. Add your blog post entry following the format of existing posts
+1. **Markdown posts hosted in this repo**
+
+   Add a new file under `blogs/_posts/` using the Jekyll naming format:
+
+   ```text
+   blogs/_posts/YYYY-MM-DD-my-post-title.md
+   ```
+
+   Start it with front matter like:
+
+   ```yaml
+   ---
+   title: My Blog Post
+   description: One-line summary used in the blog card.
+   date: 2026-03-19
+   featured: false
+   author: Your Name
+   category: documentdb-blog
+   cover_image: /assets/images/posts/my-post-title/hero.png
+   cover_image_alt: Short description of the image
+   tags:
+     - Example
+     - Markdown
+   ---
+   ```
+
+   Store post images under:
+
+   ```text
+   blogs/assets/images/posts/my-post-title/
+   ```
+
+   Then write the post body in Markdown. Jekyll renders the post page and uses the same card layout on the blog index. Images can be referenced directly from Markdown, for example:
+
+   ```md
+   ![Architecture diagram]({{ '/assets/images/posts/my-post-title/diagram.png' | relative_url }})
+   ```
+
+1. **Curated external articles**
+
+   Open [blogs/_data/posts.yml](blogs/_data/posts.yml) and add a new entry following the existing YAML format when you want the card to link to an article hosted elsewhere.
 
 1. Submit a pull request for review
 

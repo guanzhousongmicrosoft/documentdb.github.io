@@ -1,0 +1,91 @@
+---
+title: Meet the DocumentDB Kubernetes Operator
+description: Preview an open-source operator that brings declarative deployment, secure connectivity, high availability, backup and restore, and multi-environment deployment patterns to DocumentDB on Kubernetes.
+date: 2026-03-19
+featured: true
+author: DocumentDB team
+category: documentdb-blog
+tags:
+  - Kubernetes
+  - Operator
+  - DocumentDB
+  - Open Source
+---
+Running a document database on Kubernetes should not require a maze of hand-built scripts for failover, certificate handling, backup jobs, and day-two troubleshooting. The new DocumentDB Kubernetes Operator is designed to turn that operational work into a Kubernetes-native workflow.
+
+DocumentDB is the engine powering vCore-based Azure Cosmos DB for MongoDB. Built on PostgreSQL, it provides a native document-oriented NoSQL database with support for CRUD operations on BSON data types. The Kubernetes Operator runs and manages DocumentDB on Kubernetes: when you deploy a cluster, it creates and manages PostgreSQL instances, the DocumentDB Gateway, and the supporting Kubernetes resources around them. Because the gateway enables MongoDB-compatible drivers, APIs, and tools, teams can keep working with familiar clients such as `mongosh`.
+
+## Why this matters
+
+Kubernetes teams have strong patterns for stateless applications, but data services often still depend on custom runbooks and fragile operational glue. The DocumentDB Kubernetes Operator closes that gap for DocumentDB by giving platform teams a single declarative control surface for deployment, availability, security, and recovery.
+
+With the preview release, you can:
+
+- install the operator with Helm
+- have the Helm chart install CloudNativePG as a dependency
+- deploy DocumentDB through a Kubernetes custom resource
+- connect with `mongosh` and other MongoDB-compatible tooling
+- manage backup, restore, TLS, and promotion workflows through Kubernetes-native APIs
+
+## From quickstart to useful data fast
+
+The quickstart is intentionally direct. Install `cert-manager`, install the operator, create a Secret for gateway credentials, and apply a `DocumentDB` resource. The public preview docs target Kubernetes 1.35+ and call out local development with `kind` (v0.31+) and `minikube`, while also showing cloud-friendly access patterns through `LoadBalancer` services on AKS, EKS, and GKE.
+
+At the heart of that flow is a simple custom resource:
+
+```yaml
+apiVersion: documentdb.io/preview
+kind: DocumentDB
+metadata:
+  name: documentdb-preview
+  namespace: documentdb-preview-ns
+spec:
+  nodeCount: 1
+  instancesPerNode: 1
+  documentDbCredentialSecret: documentdb-credentials
+  resource:
+    storage:
+      pvcSize: 10Gi
+  exposeViaService:
+    serviceType: ClusterIP
+```
+
+Once the cluster reports a healthy state, you can connect locally with port forwarding or expose it through a load balancer in supported environments. The result is a much shorter path from cluster creation to a live MongoDB-compatible endpoint.
+
+## Built for day-two operations
+
+Bringing up a cluster is only the beginning, so the operator is opinionated about day-two workflows as well.
+
+Set `instancesPerNode: 3` and the operator creates one primary instance and two replicas for local high availability and automatic failover. Use `Backup` and `ScheduledBackup` resources for on-demand and scheduled backups, retention policies, and restore workflows into a new cluster. And when operators need visibility into what is happening, the `kubectl documentdb` plugin adds purpose-built commands for status inspection, event triage, and primary promotion.
+
+That makes the operator interesting not only for first deployment, but for the operational rhythm that follows: health checks, recovery planning, planned changes, and repeatable workflows that fit naturally into Kubernetes.
+
+## Security and connectivity without reinventing the basics
+
+Secure connectivity is built into the model from the start. The DocumentDB gateway always encrypts client connections; the TLS mode controls how certificates are managed. In practice, that means teams can choose the workflow that matches their environment:
+
+- `SelfSigned` for development and test environments
+- `CertManager` for clusters that already standardize on cert-manager
+- `Provided` for organizations that manage certificates through their own PKI processes
+
+The same pattern carries into networking. The docs cover local development through `ClusterIP` plus port forwarding, and cloud exposure through `LoadBalancer` services where that model makes sense. The operator keeps those choices declarative instead of forcing each team to reinvent them.
+
+## A practical path to multi-environment deployment
+
+The public docs position the operator across multiple cloud environments and Kubernetes distributions, and the multi-cluster guidance goes further with a documented KubeFleet-based deployment pattern spanning AKS and an on-premises Kubernetes cluster. That is a meaningful direction for teams that want Kubernetes-native control over data placement and replication without committing their operational model to a single environment.
+
+Just as importantly, the operator keeps sensitive workflows explicit. Promotion is an intentional operational action, surfaced through Kubernetes resources and the `kubectl documentdb promote` workflow, which is often exactly the right design when changes cross infrastructure or compliance boundaries.
+
+## Why try it now
+
+The project is still in preview, and the public docs are clear that it is not yet recommended for production workloads. That is exactly why now is the right time to evaluate it.
+
+If you want to see how DocumentDB could fit into your Kubernetes platform, this preview gives you a concrete way to do it: start locally, inspect the control model, test backup and restore, evaluate TLS options, and explore the operator experience before general availability.
+
+## Start exploring
+
+- [Quickstart guide](https://github.com/documentdb/documentdb-kubernetes-operator/blob/main/docs/operator-public-documentation/preview/index.md)
+- [Backup and restore guide](https://github.com/documentdb/documentdb-kubernetes-operator/blob/main/docs/operator-public-documentation/preview/backup-and-restore.md)
+- [kubectl-documentdb plugin](https://github.com/documentdb/documentdb-kubernetes-operator/blob/main/docs/operator-public-documentation/preview/kubectl-plugin.md)
+- [TLS configuration guide](https://github.com/documentdb/documentdb-kubernetes-operator/blob/main/docs/operator-public-documentation/preview/configuration/tls.md)
+- [Multi-cluster deployment guide](https://github.com/documentdb/documentdb-kubernetes-operator/blob/main/docs/developer-guides/manual-multi-cloud-deployment-guide.md)

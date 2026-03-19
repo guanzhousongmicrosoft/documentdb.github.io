@@ -1,0 +1,53 @@
+---
+layout: default
+---
+{% assign category = site.data.categories[page.category] %}
+
+<article class="blog-post">
+  <p class="blog-post__back">
+    <a href="{{ '/' | relative_url }}">&larr; Back to all blog posts</a>
+  </p>
+
+  <header class="blog-post__header">
+    <p class="blog-post__eyebrow">{{ category.label | default: "DocumentDB Blog" }}</p>
+    <h1 class="blog-post__title">{{ page.title }}</h1>
+
+    <div class="blog-post__meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+      {% if page.author %}<span>{{ page.author }}</span>{% endif %}
+    </div>
+
+    {% if page.description %}
+      <p class="blog-post__lead">{{ page.description }}</p>
+    {% endif %}
+
+    {% if page.tags and page.tags.size > 0 %}
+      <div class="blog-post__tags">
+        {% for tag in page.tags %}
+          <span class="blog-post__tag">{{ tag }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </header>
+
+  {% if page.cover_image %}
+    {% if page.cover_image contains '://' %}
+      {% assign cover_image_src = page.cover_image %}
+    {% else %}
+      {% assign cover_image_src = page.cover_image | relative_url %}
+    {% endif %}
+    <div class="blog-post__hero">
+      <img
+        class="blog-post__hero-image"
+        src="{{ cover_image_src }}"
+        alt="{{ page.cover_image_alt | default: page.title | escape }}"
+      >
+    </div>
+  {% endif %}
+
+  <div class="blog-post__content-shell">
+    <div class="blog-post__content">
+      {{ content }}
+    </div>
+  </div>
+</article>

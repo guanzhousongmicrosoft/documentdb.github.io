@@ -1,25 +1,57 @@
 {% assign post = include.post %}
 {% assign category = site.data.categories[post.category] %}
+{% assign description = post.description | default: post.excerpt | strip_html | strip_newlines | strip %}
+
+{% if post.date %}
+  {% assign meta_text = post.date | date: "%B %-d, %Y" %}
+{% elsif post.meta %}
+  {% assign meta_text = post.meta %}
+{% else %}
+  {% assign meta_text = category.meta | default: "Community article" %}
+{% endif %}
+
+{% if post.uri %}
+  {% assign href = post.uri %}
+  {% assign is_external = true %}
+{% else %}
+  {% assign href = post.url | relative_url %}
+  {% assign is_external = false %}
+{% endif %}
 
 <article>
   <a
     class="post-card post-card--{{ post.category }}{% if include.featured %} post-card--featured{% endif %}"
-    href="{{ post.uri }}"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="{{ post.title }} (opens in a new tab)"
+    href="{{ href }}"
+    {% if is_external %}target="_blank" rel="noopener noreferrer"{% endif %}
+    aria-label="{{ post.title }}{% if is_external %} (opens in a new tab){% endif %}"
   >
+    {% if post.cover_image %}
+      {% if post.cover_image contains '://' %}
+        {% assign cover_image_src = post.cover_image %}
+      {% else %}
+        {% assign cover_image_src = post.cover_image | relative_url %}
+      {% endif %}
+      <div class="post-card__media">
+        <img
+          class="post-card__image"
+          src="{{ cover_image_src }}"
+          alt="{{ post.cover_image_alt | default: post.title | escape }}"
+          loading="lazy"
+        >
+      </div>
+    {% endif %}
+
     <div class="post-card__body">
       <div class="post-card__header">
         <span class="post-card__icon" aria-hidden="true"></span>
         <div>
           <p class="post-card__source">{{ category.label | default: post.category }}</p>
-          <p class="post-card__meta">{{ category.meta | default: "Community article" }}</p>
+          <p class="post-card__meta">{{ meta_text }}</p>
         </div>
       </div>
 
       <h2 class="post-card__title">{{ post.title }}</h2>
-      <p class="post-card__description">{{ post.description }}</p>
+      <p class="post-card__description">{{ description }}</p>
 
       {% if post.tags and post.tags.size > 0 %}
         <div class="post-card__tags">
@@ -30,7 +62,11 @@
       {% endif %}
 
       <span class="post-card__link">
-        {% if include.featured %}Read full article{% else %}Read more{% endif %}
+        {% if is_external %}
+          {% if include.featured %}Read full article{% else %}Read more{% endif %}
+        {% else %}
+          {% if include.featured %}Read featured post{% else %}Read post{% endif %}
+        {% endif %}
         <span aria-hidden="true">&rarr;</span>
       </span>
     </div>
