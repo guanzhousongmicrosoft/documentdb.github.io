@@ -1,6 +1,6 @@
 ---
 title: Meet the DocumentDB Kubernetes Operator
-description: Preview an open-source operator that brings declarative deployment, secure connectivity, high availability, backup and restore, and multi-environment deployment patterns to DocumentDB on Kubernetes.
+description: Preview an open-source operator that brings declarative deployment, secure connectivity, high availability, backup and restore, and automated multi-cloud deployment to DocumentDB on Kubernetes.
 date: 2026-03-19
 featured: true
 author: DocumentDB team
@@ -11,7 +11,7 @@ tags:
   - DocumentDB
   - Open Source
 ---
-The DocumentDB Kubernetes Operator brings MongoDB-compatible document database management to any Kubernetes cluster — with declarative deployment, automatic high availability, backup and restore, TLS, and multi-cloud replication — all fully open source under the MIT license.
+The DocumentDB Kubernetes Operator brings MongoDB-compatible document database management to any Kubernetes cluster — with declarative deployment, automatic high availability, backup and restore, TLS, and a documented multi-cloud deployment path across AKS, GKE, and EKS — all fully open source under the MIT license.
 
 [DocumentDB](https://github.com/documentdb/documentdb) is an open-source, MongoDB-compatible document database engine built on PostgreSQL, governed by the Linux Foundation. It powers vCore-based Azure Cosmos DB for MongoDB and provides native support for BSON data types, aggregation pipelines, change streams, vector search, and ACID transactions. The Kubernetes Operator runs and manages DocumentDB on Kubernetes: when you deploy a cluster, it creates and manages PostgreSQL instances, the DocumentDB Gateway, and the supporting Kubernetes resources around them. The gateway translates the MongoDB wire protocol, so existing MongoDB drivers — PyMongo, Node.js, Java, Go, C++ — work without code changes, and teams can keep using familiar clients such as `mongosh`.
 
@@ -25,6 +25,7 @@ With the preview release, you can:
 - have the Helm chart install CloudNativePG as a dependency
 - deploy DocumentDB through a Kubernetes custom resource
 - connect with `mongosh` and other MongoDB-compatible tooling
+- explore a public multi-cloud deployment playground spanning AKS, GKE, and EKS
 - manage backup, restore, TLS, and promotion workflows through Kubernetes-native APIs
 
 ## From quickstart to useful data fast
@@ -70,9 +71,11 @@ Secure connectivity is built into the model from the start. The DocumentDB gatew
 
 The same pattern carries into networking. The docs cover local development through `ClusterIP` plus port forwarding, and cloud exposure through `LoadBalancer` services where that model makes sense. The operator keeps those choices declarative instead of forcing each team to reinvent them.
 
-## A practical path to multi-environment deployment
+## A standout multi-cloud deployment story
 
-The public docs position the operator across multiple cloud environments and Kubernetes distributions, and the multi-cluster guidance goes further with a documented KubeFleet-based deployment pattern spanning AKS and an on-premises Kubernetes cluster. That gives teams a practical path to run DocumentDB across the environments they already use without committing their operational model to a single environment.
+The operator already has a public multi-cloud deployment playground spanning AKS, GKE, and EKS. With a single `./deploy.sh` workflow, teams can stand up the infrastructure, join clusters into AKS Fleet, configure Istio multi-cluster service mesh, and prepare the operator for cross-cloud replication. A companion `./deploy-documentdb.sh` workflow then deploys DocumentDB, selects a primary cluster, and outputs connection details plus failover commands.
+
+That is what makes the multi-cloud story worth highlighting: this is not just a vague promise of "runs anywhere," but a concrete, hands-on path to run a MongoDB-compatible database across the three major managed Kubernetes platforms. And for hybrid environments, the repo also includes a KubeFleet-based guide for spanning AKS and an on-premises Kubernetes cluster.
 
 Just as importantly, the operator keeps sensitive workflows explicit. Promotion is an intentional operational action, surfaced through Kubernetes resources and the `kubectl documentdb promote` workflow, which is often exactly the right design when changes cross infrastructure or compliance boundaries.
 
@@ -89,4 +92,4 @@ The public docs are clear that the operator is not yet recommended for productio
 - [Backup and restore guide](https://github.com/documentdb/documentdb-kubernetes-operator/blob/main/docs/operator-public-documentation/preview/backup-and-restore.md)
 - [kubectl-documentdb plugin](https://github.com/documentdb/documentdb-kubernetes-operator/blob/main/docs/operator-public-documentation/preview/kubectl-plugin.md)
 - [TLS configuration guide](https://github.com/documentdb/documentdb-kubernetes-operator/blob/main/docs/operator-public-documentation/preview/configuration/tls.md)
-- [Multi-cluster deployment guide](https://github.com/documentdb/documentdb-kubernetes-operator/blob/main/docs/developer-guides/manual-multi-cloud-deployment-guide.md)
+- [Multi-cloud deployment playground (AKS + GKE + EKS)](https://github.com/documentdb/documentdb-kubernetes-operator/blob/main/documentdb-playground/multi-cloud-deployment/README.md)
