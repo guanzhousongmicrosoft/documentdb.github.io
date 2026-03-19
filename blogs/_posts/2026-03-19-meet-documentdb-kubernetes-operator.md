@@ -67,7 +67,7 @@ Once the cluster reports a healthy state, you can connect locally with port forw
 
 Bringing up a cluster is only the beginning, so the operator is opinionated about day-two workflows as well.
 
-Set `instancesPerNode: 3` and the operator creates one primary instance and two replicas for local high availability. If the primary fails, a replica is promoted automatically — typically within **5 to 15 seconds** for unplanned failures, and **2 to 5 seconds** for planned switchovers. Use `Backup` and `ScheduledBackup` resources for on-demand and scheduled backups with retention policies, and restore into a new cluster when needed. And when operators need visibility, the `kubectl documentdb` plugin provides purpose-built commands: `status` for cluster health and connection strings, `health` for node and replication details, `events` for streaming Kubernetes events, and `promote` for controlled primary promotion.
+Set `instancesPerNode: 3` and the operator creates one primary instance and two replicas for local high availability. If the primary fails, a replica is promoted automatically — typically within **5 to 15 seconds** for unplanned failures, and **2 to 5 seconds** for planned switchovers. Use `Backup` and `ScheduledBackup` resources for on-demand and scheduled backups with retention policies, and restore into a new cluster when needed. And when operators need visibility, the `kubectl documentdb` plugin provides purpose-built commands: `status` for cluster health and connection strings, `events` for streaming Kubernetes events, and `promote` for controlled primary promotion.
 
 That makes the operator valuable not only for first deployment, but for the operational rhythm that follows: health checks, recovery planning, planned changes, and repeatable workflows that fit naturally into Kubernetes.
 
@@ -84,7 +84,7 @@ The same declarative pattern carries into networking. The operator supports loca
 
 ## Multi-cloud and multi-environment deployment
 
-The operator is designed to run across multiple cloud providers and Kubernetes distributions. The multi-cluster guidance includes a documented KubeFleet-based deployment pattern spanning AKS and on-premises Kubernetes clusters, as well as an Istio-based pattern for true multi-cloud replication across AKS, EKS, and GKE.
+The operator is designed to run across multiple cloud providers and Kubernetes distributions. The multi-cluster guidance includes a documented KubeFleet-based deployment pattern spanning AKS and on-premises Kubernetes clusters, while the broader platform documentation covers deployment and configuration guidance for AKS, EKS, and GKE.
 
 That is a meaningful capability for teams that want Kubernetes-native control over data placement and replication without locking their operational model to a single cloud provider — especially when combined with the operator's zero licensing cost.
 
