@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "npm run compile && next dev --turbopack",
     "build": "npm run compile && next build --turbopack",
-    "compile": "npm run compile:clean && npm run compile:content",
+    "compile": "npm run compile:clean && npm run compile:content && npm run compile:samples",
     "compile:content": "tsx scripts/compile-content.tsx",
+    "compile:samples": "tsx scripts/compile-samples.tsx",
     "compile:clean": "tsx scripts/compile-clean.tsx",
     "start": "npx serve out",
     "lint": "eslint"
@@ -25,6 +26,9 @@
     "remark": "^15.0.1",
     "remark-gfm": "^4.0.1",
     "strip-markdown": "^6.0.0"
+  },
+  "overrides": {
+    "string-width": "^5.1.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",

@@ -52,46 +52,17 @@ export default function Docs() {
         {/* Documentation Grid */}
         <div className="grid grid-cols-2 gap-6 max-w-2xl mx-auto">
           {articleContent.landing.links.map((item) => {
+            const isExternal = item.link.startsWith("http");
             const isReference = item.link === "/docs/reference";
-
-            if (isReference) {
-              return (
-                <Link
-                  key={item.link}
-                  href={item.link}
-                  className="group relative cursor-pointer"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-lg blur-md group-hover:blur-lg transition-all duration-500 opacity-0 group-hover:opacity-100"></div>
-                  <div className="relative bg-neutral-800/80 backdrop-blur-sm rounded-lg border border-neutral-700/50 hover:border-blue-500/50 transition-all duration-500 group-hover:transform group-hover:scale-105 overflow-hidden h-40">
-                    <div className="p-4 h-full flex flex-col items-center justify-center text-center">
-                      <div className="w-10 h-10 bg-neutral-700/60 backdrop-blur-sm rounded-lg flex items-center justify-center mb-3 border border-neutral-600/30">
-                        <svg
-                          className="w-5 h-5 text-blue-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                          />
-                        </svg>
-                      </div>
-                      <h2 className="text-sm font-medium text-white group-hover:text-blue-300 transition-colors leading-tight">
-                        {item.title}
-                      </h2>
-                    </div>
-                  </div>
-                </Link>
-              );
-            }
+            const Wrapper = isExternal ? "a" : Link;
+            const wrapperProps = isExternal
+              ? { href: item.link, target: "_blank", rel: "noopener noreferrer" }
+              : { href: item.link };
 
             return (
-              <Link
+              <Wrapper
                 key={item.link}
-                href={item.link}
+                {...(wrapperProps as any)}
                 className="group relative cursor-pointer"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-lg blur-md group-hover:blur-lg transition-all duration-500 opacity-0 group-hover:opacity-100"></div>
@@ -108,7 +79,10 @@ export default function Docs() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                          d={isReference
+                            ? "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                            : "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                          }
                         />
                       </svg>
                     </div>
@@ -117,7 +91,7 @@ export default function Docs() {
                     </h2>
                   </div>
                 </div>
-              </Link>
+              </Wrapper>
             );
           })}
         </div>
