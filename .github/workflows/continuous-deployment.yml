@@ -20,6 +20,8 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-22.04
+    env:
+      BUNDLE_FORCE_RUBY_PLATFORM: true
     steps:
       - name: Checkout source
         uses: actions/checkout@v5
