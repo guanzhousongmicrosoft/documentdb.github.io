@@ -75,6 +75,12 @@ export default function Navbar() {
             >
               Download
             </Link>
+            <Link
+              href="/kubernetes-operator"
+              className="text-gray-300 hover:text-blue-400 transition-colors duration-200 font-medium"
+            >
+              K8s Operator
+            </Link>
             <a
               href={withBasePath("/blogs/")}
               className="text-gray-300 hover:text-blue-400 transition-colors duration-200 font-medium"
