@@ -1,0 +1,38 @@
+{% assign post = include.post %}
+{% assign category = site.data.categories[post.category] %}
+
+<article>
+  <a
+    class="post-card post-card--{{ post.category }}{% if include.featured %} post-card--featured{% endif %}"
+    href="{{ post.uri }}"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="{{ post.title }} (opens in a new tab)"
+  >
+    <div class="post-card__body">
+      <div class="post-card__header">
+        <span class="post-card__icon" aria-hidden="true"></span>
+        <div>
+          <p class="post-card__source">{{ category.label | default: post.category }}</p>
+          <p class="post-card__meta">{{ category.meta | default: "Community article" }}</p>
+        </div>
+      </div>
+
+      <h2 class="post-card__title">{{ post.title }}</h2>
+      <p class="post-card__description">{{ post.description }}</p>
+
+      {% if post.tags and post.tags.size > 0 %}
+        <div class="post-card__tags">
+          {% for tag in post.tags %}
+            <span class="post-card__tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <span class="post-card__link">
+        {% if include.featured %}Read full article{% else %}Read more{% endif %}
+        <span aria-hidden="true">&rarr;</span>
+      </span>
+    </div>
+  </a>
+</article>

@@ -27,6 +27,12 @@ articles/**/*.yml
 /.next/
 /out/
 
+# jekyll
+/.bundle/
+/.jekyll-cache/
+/.sass-cache/
+/vendor/bundle/
+
 # production
 /build
 

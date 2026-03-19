@@ -1,0 +1,25 @@
+---
+title: Latest from our Blog
+description: Insights, updates, and deep dives into the world of document databases and open-source innovation.
+---
+{% assign featured_posts = site.data.posts | where: "featured", true %}
+{% assign regular_posts = site.data.posts | where_exp: "post", "post.featured != true" %}
+
+<section class="blog-hero">
+  <p class="blog-hero__kicker">Community insights</p>
+  <h1 class="blog-hero__title">Latest from our Blog</h1>
+  <p class="blog-hero__description">
+    Insights, updates, and deep dives into the world of document databases and open-source innovation.
+  </p>
+  <p class="blog-hero__note">Articles open on their original publisher sites in a new tab.</p>
+</section>
+
+<section class="posts-list" aria-label="Blog posts">
+  {% for post in featured_posts %}
+    {% include post-card.html post=post featured=true %}
+  {% endfor %}
+
+  {% for post in regular_posts %}
+    {% include post-card.html post=post featured=false %}
+  {% endfor %}
+</section>

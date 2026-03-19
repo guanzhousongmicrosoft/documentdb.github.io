@@ -1,0 +1,12 @@
+microsoft-open-source-blog:
+  label: Microsoft Open Source Blog
+  meta: August 25, 2025
+aws-blog:
+  label: AWS Blogs
+  meta: Recent
+azure-cosmos-db-blog:
+  label: Azure Cosmos DB Blog
+  meta: Recent
+yugabytedb-blog:
+  label: YugabyteDB Blog
+  meta: Partner Content
