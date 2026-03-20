@@ -55,6 +55,11 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+          bundler-cache: true
       - name: Restore cache
         uses: actions/cache@v4
         with:
@@ -70,6 +75,7 @@ jobs:
       - name: Build with Next.js
         env:
           NEXT_BASE_PATH: ${{ github.event.repository.name }}
+          JEKYLL_BASE_PATH: /${{ github.event.repository.name }}/blogs
         run: npm run build
       - name: Download DocumentDB packages from latest release
         run: .github/scripts/download_packages.sh

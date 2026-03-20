@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "npm run compile && next dev --turbopack",
-    "build": "npm run compile && next build --turbopack",
+    "build": "npm run build:next && npm run build:blogs",
+    "build:next": "npm run compile && next build --turbopack",
+    "build:blogs": "bundle exec jekyll build --config blogs/_config.yml --source blogs --destination out/blogs --baseurl \"${JEKYLL_BASE_PATH:-/blogs}\"",
     "compile": "npm run compile:clean && npm run compile:content && npm run compile:samples",
     "compile:content": "tsx scripts/compile-content.tsx",
     "compile:samples": "tsx scripts/compile-samples.tsx",

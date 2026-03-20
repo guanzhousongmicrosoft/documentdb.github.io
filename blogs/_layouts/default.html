@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if page.title %}{{ page.title }} · {% endif %}DocumentDB</title>
+    <meta name="description" content="{{ page.description | default: site.description | escape }}">
+    <meta name="theme-color" content="#09090b">
+    <link rel="stylesheet" href="{{ '/assets/blog.css' | relative_url }}">
+  </head>
+  <body>
+    {% assign site_root = site.baseurl | replace: '/blogs', '' %}
+    {% if site_root == '' %}
+      {% assign site_root = '/' %}
+    {% endif %}
+
+    {% assign home_href = site_root | append: '/' | replace: '//', '/' %}
+    {% assign docs_href = site_root | append: '/docs/' | replace: '//', '/' %}
+    {% assign packages_href = site_root | append: '/packages/' | replace: '//', '/' %}
+    {% assign operator_href = site_root | append: '/kubernetes-operator/' | replace: '//', '/' %}
+    {% assign logo_href = site_root | append: '/images/DocumentDB Logo - background removed.png' | replace: '//', '/' %}
+    {% assign blogs_href = site.baseurl | append: '/' | replace: '//', '/' %}
+
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header__inner">
+          <a class="site-brand" href="{{ home_href }}">
+            <img class="site-brand__logo" src="{{ logo_href }}" alt="" width="48" height="48">
+            <span>DocumentDB</span>
+          </a>
+          <nav class="site-nav" aria-label="Primary">
+            <a href="{{ home_href }}">Home</a>
+            <a href="https://github.com/documentdb/documentdb" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://discord.gg/vH7bYu524D" target="_blank" rel="noopener noreferrer">Discord</a>
+            <a href="{{ docs_href }}">Docs</a>
+            <a href="{{ packages_href }}">Download</a>
+            <a href="{{ operator_href }}">K8s Operator</a>
+            <a href="{{ blogs_href }}" aria-current="page">Blogs</a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="blog-main">
+        {{ content }}
+      </main>
+
+      <footer class="site-footer">
+        <div class="site-footer__inner">
+          Copyright © DocumentDB a Series of LF Projects, LLC. For web site terms of use, trademark policy and other project policies please see https://lfprojects.org.
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

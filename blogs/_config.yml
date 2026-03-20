@@ -1,0 +1,22 @@
+title: DocumentDB Blog
+description: Insights, updates, and deep dives into the world of document databases and open-source innovation.
+baseurl: /blogs
+url: ""
+permalink: pretty
+markdown: kramdown
+kramdown:
+  input: GFM
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: default
+  -
+    scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      category: documentdb-blog
+      permalink: /posts/:title/
