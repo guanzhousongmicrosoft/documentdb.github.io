@@ -280,11 +280,12 @@ export default function AIPage() {
               </span>
             </div>
             <h2 className="text-xl font-semibold text-white sm:text-2xl">
-              Four commands to your first vector search
+              Start locally with one Docker command
             </h2>
             <p className="mt-2 text-sm leading-6 text-gray-400">
-              Start DocumentDB with Docker, connect with mongosh, create a vector
-              index, and run a semantic query.
+              Spin up DocumentDB with Docker, then follow the four-step quick
+              start below to connect with mongosh, create a vector index, and
+              run your first vector search.
             </p>
             <div className="mt-5">
               <CommandSnippet command={quickRunCommand} label="Docker" />
