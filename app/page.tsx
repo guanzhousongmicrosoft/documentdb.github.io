@@ -10,6 +10,16 @@ type CapabilityIconName =
   | "vector"
   | "platform";
 
+type Capability = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  highlights: string[];
+  icon: CapabilityIconName;
+  href?: string;
+  linkLabel?: string;
+};
+
 const quickRunCommand = `docker run -dt --name documentdb \\
   -p 10260:10260 \\
   ghcr.io/documentdb/documentdb/documentdb-local:latest \\
@@ -68,7 +78,7 @@ const whyDocumentDB = [
   },
 ];
 
-const capabilities = [
+const capabilities: Capability[] = [
   {
     eyebrow: "Foundation",
     title: "Document + SQL",
@@ -92,6 +102,8 @@ const capabilities = [
       "Embeddings and similarity search powered by pgvector.",
     highlights: ["Embeddings", "Similarity"],
     icon: "vector" as const,
+    href: "/ai",
+    linkLabel: "Explore AI",
   },
   {
     eyebrow: "Open source",
@@ -421,15 +433,25 @@ export default function Home() {
                 <p className="text-sm leading-6 text-gray-400">
                   {item.description}
                 </p>
-                <div className="mt-auto flex flex-wrap gap-1.5 pt-5">
-                  {item.highlights.map((highlight) => (
-                    <span
-                      key={highlight}
-                      className="rounded-full border border-neutral-700 bg-neutral-800/90 px-3 py-1 text-[11px] font-medium text-gray-200"
+                <div className="mt-auto pt-5">
+                  <div className="flex flex-wrap gap-1.5">
+                    {item.highlights.map((highlight) => (
+                      <span
+                        key={highlight}
+                        className="rounded-full border border-neutral-700 bg-neutral-800/90 px-3 py-1 text-[11px] font-medium text-gray-200"
+                      >
+                        {highlight}
+                      </span>
+                    ))}
+                  </div>
+                  {item.href ? (
+                    <Link
+                      href={item.href}
+                      className="mt-4 inline-flex items-center text-sm font-semibold text-blue-300 transition-colors hover:text-blue-200"
                     >
-                      {highlight}
-                    </span>
-                  ))}
+                      {item.linkLabel}
+                    </Link>
+                  ) : null}
                 </div>
               </article>
             ))}

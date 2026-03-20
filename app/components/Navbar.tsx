@@ -30,6 +30,7 @@ const navItems: NavItem[] = [
     icon: "discord",
   },
   { label: "Docs", href: "/docs", kind: "link" },
+  { label: "AI", href: "/ai", kind: "link" },
   { label: "Download", href: "/packages", kind: "link" },
   { label: "K8s Operator", href: "/kubernetes-operator", kind: "link" },
   { label: "Blogs", href: withBasePath("/blogs/"), kind: "anchor" },
