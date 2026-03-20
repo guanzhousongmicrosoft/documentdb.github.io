@@ -14,3 +14,5 @@ landing:
       link: /docs/documentdb-local
     - title: Architecture under the hood
       link: /docs/architecture
+    - title: Samples & Demos
+      link: /samples

@@ -87,6 +87,12 @@ export default function Navbar() {
             >
               Blogs
             </a>
+            <Link
+              href="/samples"
+              className="text-gray-300 hover:text-blue-400 transition-colors duration-200 font-medium"
+            >
+              Samples
+            </Link>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import React from 'react';
 import { render, Box, Text } from 'ink';
 import { minimatch } from 'minimatch';
@@ -181,8 +181,9 @@ async function cloneContent(
       const cloneDir = path.join(TEMP_DIR, repoName);
 
       // Clone the repository
-      execSync(
-        `git clone --depth 1 --branch ${source.branch} ${source.repository} "${cloneDir}"`,
+      spawnSync(
+        'git',
+        ['clone', '--depth', '1', '--branch', source.branch, source.repository, cloneDir],
         { stdio: 'pipe' }
       );
 
