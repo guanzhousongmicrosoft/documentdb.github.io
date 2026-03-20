@@ -70,6 +70,12 @@ export default function Navbar() {
               Docs
             </Link>
             <Link
+              href="/ai"
+              className="text-violet-200 hover:text-violet-100 transition-colors duration-200 font-medium"
+            >
+              AI
+            </Link>
+            <Link
               href="/packages"
               className="text-gray-300 hover:text-blue-400 transition-colors duration-200 font-medium"
             >

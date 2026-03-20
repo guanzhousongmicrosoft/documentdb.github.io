@@ -4,6 +4,16 @@ import { Sample } from '../types/Sample';
 
 export const samples: Sample[] = [
   {
+    id: 'hotel-agent-ts',
+    title: 'Hotel Recommendation Agent: RAG with Native Vector Search and LLM Synthesizer in TypeScript',
+    description: 'A TypeScript app that uses DocumentDB OSS native vector search to retrieve semantically similar hotels from a natural-language query, then passes the results to a LlamaIndex synthesizer agent (llama3.2 via Ollama) to generate a concise, comparative recommendation. Runs entirely on open-source tools with no cloud accounts required.',
+    language: 'TypeScript',
+    industry: 'AI/ML',
+    difficulty: 'Intermediate',
+    tags: ['Vector Search', 'AI Agent', 'LlamaIndex', 'Ollama', 'Embeddings', 'RAG', 'DocumentDB OSS', 'Open Source'],
+    githubUrl: 'https://github.com/documentdb/documentdb-samples-gallery/tree/main/hotel-agent-ts',
+  },
+  {
     id: 'book-finder-js',
     title: 'BookFinder: AI-Powered Semantic Book Discovery',
     description: 'A Node.js/Express app that uses OpenAI embeddings and DocumentDB vector search to let users discover books through natural language queries like \'dystopian future with rebellion\'.',
@@ -12,5 +22,45 @@ export const samples: Sample[] = [
     difficulty: 'Intermediate',
     tags: ['Vector Search', 'OpenAI', 'Embeddings', 'Express', 'Semantic Search'],
     githubUrl: 'https://github.com/documentdb/documentdb-samples-gallery/tree/main/book-finder-js',
+  },
+  {
+    id: 'retail-product-store-js',
+    title: 'Retail Product Store: Full-Stack Product Catalog with DocumentDB',
+    description: 'A Node.js/Express app backed by DocumentDB that serves a responsive retail storefront with product browsing, category filtering, sort, and keyword search. Products are stored in DocumentDB and served via a REST API, with a vanilla JS frontend.',
+    language: 'Node.js',
+    industry: 'Retail',
+    difficulty: 'Beginner',
+    tags: ['Express', 'REST API', 'DocumentDB OSS', 'Vanilla JS', 'Full Stack'],
+    githubUrl: 'https://github.com/documentdb/documentdb-samples-gallery/tree/main/retail-product-store-js',
+  },
+  {
+    id: 'fraud-detection-agent-py',
+    title: 'Fraud Detection Multi-Agent System: Retrieval, Analysis, and Decision Agents with DocumentDB Vector Search',
+    description: 'A Python app that uses a three-agent pipeline — Retrieval, Analysis, and Decision — to classify transactions as APPROVE, REVIEW, or BLOCK. The Retrieval Agent finds similar historical transactions using DocumentDB OSS native vector search; the Analysis Agent uses llama3.2 via Ollama to identify risk patterns; the Decision Agent issues the final verdict with a confidence score. Runs entirely on open-source tools with no cloud accounts required.',
+    language: 'Python',
+    industry: 'Financial Services',
+    difficulty: 'Intermediate',
+    tags: ['Vector Search', 'Multi-Agent', 'Fraud Detection', 'Ollama', 'Embeddings', 'RAG', 'DocumentDB OSS', 'Open Source'],
+    githubUrl: 'https://github.com/documentdb/documentdb-samples-gallery/tree/main/fraud-detection-agent-py',
+  },
+  {
+    id: 'content-semantic-search-py',
+    title: 'Content Semantic Search Portal: Semantic Search Over Articles, Blogs, and PDFs',
+    description: 'A Python/Flask web portal that stores articles, blogs, and PDF documents as MongoDB documents with vector embeddings in DocumentDB OSS. Users search by meaning using natural language and receive semantically ranked results by cosine similarity. Supports ingesting custom .txt and .pdf files alongside sample content. Built entirely on open-source tools with no cloud accounts required.',
+    language: 'Python',
+    industry: 'Media & Publishing',
+    difficulty: 'Beginner',
+    tags: ['Vector Search', 'Semantic Search', 'Flask', 'Embeddings', 'Ollama', 'PDF', 'DocumentDB OSS', 'Open Source'],
+    githubUrl: 'https://github.com/documentdb/documentdb-samples-gallery/tree/main/content-semantic-search-py',
+  },
+  {
+    id: 'clinical-note-similarity-py',
+    title: 'Clinical Note Similarity Explorer: Find Similar Cases with DocumentDB Vector Search',
+    description: 'A Python/Flask web app that stores de-identified fictional clinical notes with vector embeddings and metadata in DocumentDB OSS. Clinicians and researchers can search for similar cases using natural language clinical descriptions, filtered by medical specialty, with results ranked by semantic similarity. All notes are fictional sample data. Built entirely on open-source tools.',
+    language: 'Python',
+    industry: 'Healthcare',
+    difficulty: 'Intermediate',
+    tags: ['Vector Search', 'Semantic Search', 'Flask', 'Embeddings', 'Ollama', 'Clinical NLP', 'DocumentDB OSS', 'Open Source'],
+    githubUrl: 'https://github.com/documentdb/documentdb-samples-gallery/tree/main/clinical-note-similarity-py',
   }
 ];
