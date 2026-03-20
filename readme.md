@@ -1,10 +1,12 @@
 # DocumentDB Website
 
-A modern website for DocumentDB built with [Next.js](https://nextjs.org/) and [Tailwind CSS](https://tailwindcss.com/). The site features community blog posts and technical documentation, with content automatically pulled from the [documentdb/docs](https://github.com/documentdb/docs) repository during the build process.
+A modern website for DocumentDB built with [Next.js](https://nextjs.org/) for the main site and [Jekyll](https://jekyllrb.com/) for the `/blogs/` section. The site features community blog posts and technical documentation, with content automatically pulled from the [documentdb/docs](https://github.com/documentdb/docs) repository during the build process.
 
 ## Prerequisites for Development
 
 - **[Node.js](https://nodejs.org/)** (*20 or higher*)
+
+- **[Ruby](https://www.ruby-lang.org/)** with **Bundler** (*for the Jekyll-powered blog section*)
 
 - **[Git](https://git-scm.com/)** (*for cloning documentation content*)
 
@@ -22,13 +24,26 @@ Get started by cloning and running this repository locally.
     npm install
     ```
 
-1. Start the development server:
+1. Install Ruby dependencies:
+
+    ```bash
+    bundle install
+    ```
+
+1. Start the Next.js development server:
 
     ```bash
     npm run dev
     ```
 
-1. Observe that the site will be available at http://localhost:3000
+1. For a full static preview, including the Jekyll-powered blog section:
+
+    ```bash
+    npm run build
+    npm run start
+    ```
+
+1. Observe that the preview site will be available at http://localhost:3000
 
 The first time you run `npm run dev` or `npm run build`, documentation content will be automatically compiled from the [documentdb/docs](https://github.com/documentdb/docs) repository.
 
@@ -40,9 +55,49 @@ We welcome contributions to improve the DocumentDB website, whether it's blog po
 
 Blog posts are managed locally in this repository. Contribute directly through a pull request to this repository.
 
-1. Open [blogs/content.yml](blogs/content.yml)
+You can publish blog content in two ways:
 
-1. Add your blog post entry following the format of existing posts
+1. **Markdown posts hosted in this repo**
+
+   Add a new file under `blogs/_posts/` using the Jekyll naming format:
+
+   ```text
+   blogs/_posts/YYYY-MM-DD-my-post-title.md
+   ```
+
+   Start it with front matter like:
+
+   ```yaml
+   ---
+   title: My Blog Post
+   description: One-line summary used in the blog card.
+   date: 2026-03-19
+   featured: false
+   author: Your Name
+   category: documentdb-blog
+   cover_image: /assets/images/posts/my-post-title/hero.png
+   cover_image_alt: Short description of the image
+   tags:
+     - Example
+     - Markdown
+   ---
+   ```
+
+   Store post images under:
+
+   ```text
+   blogs/assets/images/posts/my-post-title/
+   ```
+
+   Then write the post body in Markdown. Jekyll renders the post page and uses the same card layout on the blog index. Images can be referenced directly from Markdown, for example:
+
+   ```md
+   ![Architecture diagram]({{ '/assets/images/posts/my-post-title/diagram.png' | relative_url }})
+   ```
+
+1. **Curated external articles**
+
+   Open [blogs/_data/posts.yml](blogs/_data/posts.yml) and add a new entry following the existing YAML format when you want the card to link to an article hosted elsewhere.
 
 1. Submit a pull request for review
 
@@ -100,13 +155,13 @@ The `content.config.json` file controls how documentation is compiled from exter
 While content is automatically compiled during builds, you can manually trigger these operations during development:
 
 ```bash
-# Clean all target directories
-npm run clean:content
+# Build the full static site artifact
+npm run build
 ```
 
 ```bash
-# Compile content from sources
-npm run compile:content
+# Start the static preview server
+npm run start
 ```
 
 ## Develop in GitHub Codespaces
