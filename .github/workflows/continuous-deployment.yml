@@ -79,6 +79,48 @@ jobs:
         run: npm run build
       - name: Download DocumentDB packages from latest release
         run: .github/scripts/download_packages.sh
+      - name: Verify generated package components
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          release_info = Path("out/packages/release-info.json")
+          if not release_info.exists():
+              raise SystemExit("release-info.json was not generated")
+
+          data = json.loads(release_info.read_text())
+          assets = [asset["name"] for asset in data.get("assets", [])]
+          components = ("deb11", "deb12", "deb13", "ubuntu22", "ubuntu24")
+
+          for component in components:
+              has_assets = any(
+                  name.endswith(".deb")
+                  and (
+                      name.startswith(f"{component}-")
+                      or name.startswith(f"{component}.04-")
+                  )
+                  for name in assets
+              )
+              if not has_assets:
+                  continue
+
+              for arch in ("amd64", "arm64"):
+                  packages = Path(f"out/deb/dists/stable/{component}/binary-{arch}/Packages")
+                  packages_gz = Path(f"out/deb/dists/stable/{component}/binary-{arch}/Packages.gz")
+                  if not packages.exists() or not packages_gz.exists():
+                      raise SystemExit(
+                          f"Missing APT metadata for {component} {arch}: "
+                          f"{packages} / {packages_gz}"
+                      )
+
+          release_file = Path("out/deb/dists/stable/Release")
+          if release_file.exists() and any(name.startswith("deb13-") and name.endswith(".deb") for name in assets):
+              release_text = release_file.read_text()
+              if "deb13" not in release_text:
+                  raise SystemExit("deb13 assets exist but deb13 is missing from the APT Release file")
+          PY
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
