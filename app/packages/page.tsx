@@ -278,9 +278,8 @@ export default function PackagesPage() {
               </p>
               {packageFamily === "apt" ? (
                 <p className="mt-2 text-sm text-amber-300">
-                  Debian 13 packages are currently available from GitHub Releases as direct
-                  downloads while the APT repository component is being published. Debian 11
-                  currently supports PostgreSQL 16 and 17 in the repository-backed flow.
+                  Debian 13 is now supported in the APT repository-backed install flow. Debian
+                  11 currently supports only PostgreSQL 16 and 17.
                 </p>
               ) : null}
               <div className="mt-4">
@@ -314,7 +313,7 @@ export default function PackagesPage() {
                 <tbody className="text-gray-300">
                   <tr className="border-b border-neutral-800">
                     <td className="px-3 py-3 font-semibold text-blue-300">APT</td>
-                    <td className="px-3 py-3">Ubuntu 22.04/24.04, Debian 11/12</td>
+                    <td className="px-3 py-3">Ubuntu 22.04/24.04, Debian 11/12/13</td>
                     <td className="px-3 py-3">amd64, arm64</td>
                     <td className="px-3 py-3">16, 17, 18 (Debian 11: 16, 17)</td>
                     <td className="px-3 py-3">
@@ -339,8 +338,8 @@ export default function PackagesPage() {
                 target instead of scanning all combinations manually.
               </p>
               <p className="mt-2 text-xs text-gray-500">
-                Debian 13 packages are published as direct <code>.deb</code> assets on GitHub
-                Releases until the APT repository component is available.
+                Debian 13 packages are available in the <code>deb13</code> APT component and
+                remain downloadable as direct <code>.deb</code> assets from GitHub Releases.
               </p>
             </div>
           </details>

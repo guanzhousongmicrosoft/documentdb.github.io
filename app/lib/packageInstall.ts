@@ -1,4 +1,4 @@
-export type AptDistro = "ubuntu22" | "ubuntu24" | "deb11" | "deb12";
+export type AptDistro = "ubuntu22" | "ubuntu24" | "deb11" | "deb12" | "deb13";
 export type RpmDistro = "rhel8" | "rhel9";
 export type AptArch = "amd64" | "arm64";
 export type RpmArch = "x86_64" | "aarch64";
@@ -10,6 +10,7 @@ export const aptTargetLabels: Record<AptDistro, string> = {
   ubuntu24: "Ubuntu 24.04 (Noble)",
   deb11: "Debian 11 (Bullseye)",
   deb12: "Debian 12 (Bookworm)",
+  deb13: "Debian 13 (Trixie)",
 };
 
 export const rpmTargetLabels: Record<RpmDistro, string> = {
@@ -22,6 +23,7 @@ export const aptTargetPgVersions: Record<AptDistro, AptPgVersion[]> = {
   ubuntu24: ["16", "17", "18"],
   deb11: ["16", "17"],
   deb12: ["16", "17", "18"],
+  deb13: ["16", "17", "18"],
 };
 
 const aptPgdgSuites: Record<AptDistro, string> = {
@@ -29,6 +31,7 @@ const aptPgdgSuites: Record<AptDistro, string> = {
   ubuntu24: "noble",
   deb11: "bullseye",
   deb12: "bookworm",
+  deb13: "trixie",
 };
 
 const rpmMajorVersions: Record<RpmDistro, "8" | "9"> = {

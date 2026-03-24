@@ -49,7 +49,7 @@ Install DocumentDB on Linux hosts with apt/rpm packages.
 
 Use the [Package Finder](/packages) to generate the exact install command for your distro, architecture, and PostgreSQL version.
 
-> The repository-backed install commands currently cover Ubuntu 22.04/24.04, Debian 11/12, and RHEL-family 8/9 systems. Debian 13 packages are available as direct downloads from GitHub Releases while the APT repository component is being published. Debian 11 currently resolves PostgreSQL 16 and 17 in the repository-backed flow.
+> The repository-backed install commands currently cover Ubuntu 22.04/24.04, Debian 11/12/13, and RHEL-family 8/9 systems. Debian 11 currently resolves PostgreSQL 16 and 17 in the repository-backed flow.
 
 ## APT example
 

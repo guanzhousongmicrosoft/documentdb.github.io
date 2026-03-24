@@ -27,7 +27,8 @@ GOT_RPM=0
 DEB_POOL="out/deb/pool/${COMPONENTS}"
 # Debian/Ubuntu pools
 DEB_POOL_DEB11="out/deb/pool/deb11"
-DEB_POOL_DEB12="out/deb/pool/deb12" 
+DEB_POOL_DEB12="out/deb/pool/deb12"
+DEB_POOL_DEB13="out/deb/pool/deb13"
 DEB_POOL_UBUNTU22="out/deb/pool/ubuntu22"
 DEB_POOL_UBUNTU24="out/deb/pool/ubuntu24"
 # RPM pools
@@ -39,12 +40,14 @@ DEB_DISTS="dists/${SUITE}"
 DEB_DISTS_COMPONENTS_AMD64="${DEB_DISTS}/${COMPONENTS}/binary-amd64"
 DEB_DISTS_DEB11_AMD64="${DEB_DISTS}/deb11/binary-amd64"
 DEB_DISTS_DEB12_AMD64="${DEB_DISTS}/deb12/binary-amd64"
+DEB_DISTS_DEB13_AMD64="${DEB_DISTS}/deb13/binary-amd64"
 DEB_DISTS_UBUNTU22_AMD64="${DEB_DISTS}/ubuntu22/binary-amd64"
 DEB_DISTS_UBUNTU24_AMD64="${DEB_DISTS}/ubuntu24/binary-amd64"
 # ARM64 directories
 DEB_DISTS_COMPONENTS_ARM64="${DEB_DISTS}/${COMPONENTS}/binary-arm64"
 DEB_DISTS_DEB11_ARM64="${DEB_DISTS}/deb11/binary-arm64"
 DEB_DISTS_DEB12_ARM64="${DEB_DISTS}/deb12/binary-arm64"
+DEB_DISTS_DEB13_ARM64="${DEB_DISTS}/deb13/binary-arm64"
 DEB_DISTS_UBUNTU22_ARM64="${DEB_DISTS}/ubuntu22/binary-arm64"
 DEB_DISTS_UBUNTU24_ARM64="${DEB_DISTS}/ubuntu24/binary-arm64"
 GPG_TTY=""
@@ -54,7 +57,7 @@ generate_hashes() {
   HASH_TYPE="$1"
   HASH_COMMAND="$2"
   echo "${HASH_TYPE}:"
-  for component in ${COMPONENTS} deb11 deb12 ubuntu22 ubuntu24; do
+  for component in ${COMPONENTS} deb11 deb12 deb13 ubuntu22 ubuntu24; do
     if [ -d "$component" ]; then
       find "$component" -type f | while read -r file
       do
@@ -116,6 +119,12 @@ for asset in data.get('assets', []):
         clean_name=$(echo "$filename" | sed 's/^deb12-//')
         cp "out/packages/$filename" "$DEB_POOL_DEB12/$clean_name"
         sign_deb_package "$DEB_POOL_DEB12/$clean_name"
+      elif [[ "$filename" =~ ^deb13-postgresql-[0-9]+-documentdb.*\.deb$ ]]; then
+        GOT_DEB=1
+        mkdir -p "$DEB_POOL_DEB13"
+        clean_name=$(echo "$filename" | sed 's/^deb13-//')
+        cp "out/packages/$filename" "$DEB_POOL_DEB13/$clean_name"
+        sign_deb_package "$DEB_POOL_DEB13/$clean_name"
       elif [[ "$filename" =~ ^ubuntu22\.04-postgresql-[0-9]+-documentdb.*\.deb$ ]]; then
         GOT_DEB=1
         mkdir -p "$DEB_POOL_UBUNTU22"
@@ -209,6 +218,13 @@ if [ "$GOT_DEB" = "1" ]; then
     dpkg-scanpackages --arch arm64 pool/deb12/ > "${DEB_DISTS_DEB12_ARM64}/Packages"
     gzip -k -f "${DEB_DISTS_DEB12_AMD64}/Packages" "${DEB_DISTS_DEB12_ARM64}/Packages"
   fi
+
+  if [ -d "pool/deb13" ] && [ "$(ls -A pool/deb13/*.deb 2>/dev/null)" ]; then
+    mkdir -p "${DEB_DISTS_DEB13_AMD64}" "${DEB_DISTS_DEB13_ARM64}"
+    dpkg-scanpackages --arch amd64 pool/deb13/ > "${DEB_DISTS_DEB13_AMD64}/Packages"
+    dpkg-scanpackages --arch arm64 pool/deb13/ > "${DEB_DISTS_DEB13_ARM64}/Packages"
+    gzip -k -f "${DEB_DISTS_DEB13_AMD64}/Packages" "${DEB_DISTS_DEB13_ARM64}/Packages"
+  fi
   
   if [ -d "pool/ubuntu22" ] && [ "$(ls -A pool/ubuntu22/*.deb 2>/dev/null)" ]; then
     mkdir -p "${DEB_DISTS_UBUNTU22_AMD64}" "${DEB_DISTS_UBUNTU22_ARM64}"
@@ -253,6 +269,21 @@ if [ "$GOT_DEB" = "1" ]; then
     dpkg-scanpackages --arch arm64 pool/deb12/ > "${DEB_DISTS_DEB12_ARM64}/Packages"
     gzip -k -f "${DEB_DISTS_DEB12_ARM64}/Packages"
   fi
+
+  # Create deb13 component (Debian 13 Trixie)
+  if [ -d "pool/deb13" ] && [ "$(ls -A pool/deb13/*.deb 2>/dev/null)" ]; then
+    # AMD64 packages
+    mkdir -p "${DEB_DISTS_DEB13_AMD64}"
+    echo "Scanning Debian 13 AMD64 packages for deb13 component"
+    dpkg-scanpackages --arch amd64 pool/deb13/ > "${DEB_DISTS_DEB13_AMD64}/Packages"
+    gzip -k -f "${DEB_DISTS_DEB13_AMD64}/Packages"
+
+    # ARM64 packages
+    mkdir -p "${DEB_DISTS_DEB13_ARM64}"
+    echo "Scanning Debian 13 ARM64 packages for deb13 component"
+    dpkg-scanpackages --arch arm64 pool/deb13/ > "${DEB_DISTS_DEB13_ARM64}/Packages"
+    gzip -k -f "${DEB_DISTS_DEB13_ARM64}/Packages"
+  fi
   
   # Create ubuntu22 component (Ubuntu 22.04 Jammy)
   if [ -d "pool/ubuntu22" ] && [ "$(ls -A pool/ubuntu22/*.deb 2>/dev/null)" ]; then
@@ -292,14 +323,15 @@ if [ "$GOT_DEB" = "1" ]; then
   [ -d "${COMPONENTS}/binary-amd64" ] && AVAILABLE_COMPONENTS="${AVAILABLE_COMPONENTS} ${COMPONENTS}"
   [ -d "deb11/binary-amd64" ] && AVAILABLE_COMPONENTS="${AVAILABLE_COMPONENTS} deb11"
   [ -d "deb12/binary-amd64" ] && AVAILABLE_COMPONENTS="${AVAILABLE_COMPONENTS} deb12"
+  [ -d "deb13/binary-amd64" ] && AVAILABLE_COMPONENTS="${AVAILABLE_COMPONENTS} deb13"
   [ -d "ubuntu22/binary-amd64" ] && AVAILABLE_COMPONENTS="${AVAILABLE_COMPONENTS} ubuntu22"
   [ -d "ubuntu24/binary-amd64" ] && AVAILABLE_COMPONENTS="${AVAILABLE_COMPONENTS} ubuntu24"
   AVAILABLE_COMPONENTS=$(echo $AVAILABLE_COMPONENTS | sed 's/^ *//')
   
   # Determine available architectures
   AVAILABLE_ARCHITECTURES=""
-  [ -d "${COMPONENTS}/binary-amd64" ] || [ -d "deb11/binary-amd64" ] || [ -d "deb12/binary-amd64" ] || [ -d "ubuntu22/binary-amd64" ] || [ -d "ubuntu24/binary-amd64" ] && AVAILABLE_ARCHITECTURES="${AVAILABLE_ARCHITECTURES} amd64"
-  [ -d "${COMPONENTS}/binary-arm64" ] || [ -d "deb11/binary-arm64" ] || [ -d "deb12/binary-arm64" ] || [ -d "ubuntu22/binary-arm64" ] || [ -d "ubuntu24/binary-arm64" ] && AVAILABLE_ARCHITECTURES="${AVAILABLE_ARCHITECTURES} arm64"
+  [ -d "${COMPONENTS}/binary-amd64" ] || [ -d "deb11/binary-amd64" ] || [ -d "deb12/binary-amd64" ] || [ -d "deb13/binary-amd64" ] || [ -d "ubuntu22/binary-amd64" ] || [ -d "ubuntu24/binary-amd64" ] && AVAILABLE_ARCHITECTURES="${AVAILABLE_ARCHITECTURES} amd64"
+  [ -d "${COMPONENTS}/binary-arm64" ] || [ -d "deb11/binary-arm64" ] || [ -d "deb12/binary-arm64" ] || [ -d "deb13/binary-arm64" ] || [ -d "ubuntu22/binary-arm64" ] || [ -d "ubuntu24/binary-arm64" ] && AVAILABLE_ARCHITECTURES="${AVAILABLE_ARCHITECTURES} arm64"
   AVAILABLE_ARCHITECTURES=$(echo $AVAILABLE_ARCHITECTURES | sed 's/^ *//')
   
   {

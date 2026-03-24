@@ -7,13 +7,14 @@ Verified installation commands for the DocumentDB PostgreSQL extension.
 - Repository-backed installs were exercised in Docker on Ubuntu 22.04, Ubuntu 24.04, Debian 11, Debian 12, Rocky Linux 8, and Rocky Linux 9.
 - Both `amd64`/`x86_64` and `arm64`/`aarch64` variants were checked.
 - PostgreSQL package variants `16`, `17`, and `18` were resolved successfully for the supported repository-backed combinations, with one exception: Debian 11 currently resolves PostgreSQL `16` and `17` only.
-- Debian 13 `.deb` assets are published on GitHub Releases, but the APT repository does **not** currently publish a `deb13` component, so Debian 13 should use direct downloads for now.
+- Debian 13 `.deb` assets are published on GitHub Releases, and the APT repository now publishes a `deb13` component for repository-backed installs.
 
 ## Supported PostgreSQL Versions
 
 - Ubuntu 22.04 / 24.04: 16, 17, 18
 - Debian 11: 16, 17
 - Debian 12: 16, 17, 18
+- Debian 13: 16, 17, 18
 - RHEL-family 8 / 9: 16, 17, 18
 
 ## Repository-backed package installs
@@ -68,6 +69,19 @@ curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearm
 echo "deb [signed-by=/usr/share/keyrings/postgresql.gpg] https://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null && \
 curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor --yes -o /usr/share/keyrings/documentdb-archive-keyring.gpg && \
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable deb12" | sudo tee /etc/apt/sources.list.d/documentdb.list >/dev/null && \
+sudo apt update && \
+sudo apt install -y postgresql-16-documentdb
+```
+
+### Debian 13 (Trixie)
+
+```bash
+sudo apt update && \
+sudo apt install -y curl ca-certificates gnupg && \
+curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor --yes -o /usr/share/keyrings/postgresql.gpg && \
+echo "deb [signed-by=/usr/share/keyrings/postgresql.gpg] https://apt.postgresql.org/pub/repos/apt trixie-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null && \
+curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor --yes -o /usr/share/keyrings/documentdb-archive-keyring.gpg && \
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable deb13" | sudo tee /etc/apt/sources.list.d/documentdb.list >/dev/null && \
 sudo apt update && \
 sudo apt install -y postgresql-16-documentdb
 ```
@@ -158,7 +172,6 @@ rhel9-postgresql18-documentdb-0.109.0-1.el9.x86_64.rpm
 
 ## Notes
 
-- The APT repository currently publishes components for `ubuntu22`, `ubuntu24`, `deb11`, and `deb12`.
-- Debian 13 assets exist on GitHub Releases, but the APT repository component is not published yet.
+- The APT repository currently publishes components for `ubuntu22`, `ubuntu24`, `deb11`, `deb12`, and `deb13`.
 - Debian 11 PostgreSQL 18 assets exist, but the upstream Bullseye PostGIS dependency is not currently installable from PGDG.
 - The RPM flow depends on EPEL plus PostgreSQL's upstream RPM repository because DocumentDB depends on PostgreSQL, `pg_cron`, `pgvector`, PostGIS, and `rum`.
