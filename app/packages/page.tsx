@@ -278,8 +278,8 @@ export default function PackagesPage() {
               </p>
               {packageFamily === "apt" ? (
                 <p className="mt-2 text-sm text-amber-300">
-                  Debian 13 is now available in the repository-backed APT flow. Debian 11
-                  currently supports PostgreSQL 16 and 17 in the repository-backed flow.
+                  Debian 13 is now supported in the APT repository-backed install flow. Debian
+                  11 currently supports only PostgreSQL 16 and 17.
                 </p>
               ) : null}
               <div className="mt-4">
