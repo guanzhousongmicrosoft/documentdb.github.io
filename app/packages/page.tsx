@@ -33,17 +33,17 @@ const nextGuides = [
     href: "/docs/getting-started",
   },
   {
-    title: "Python",
+    title: "Python Quick Start",
     description: "Install PyMongo and connect to your local DocumentDB instance.",
     href: "/docs/getting-started/python-setup",
   },
   {
-    title: "Node.js",
+    title: "Node.js Quick Start",
     description: "Use the Node.js driver and run your first queries locally.",
     href: "/docs/getting-started/nodejs-setup",
   },
   {
-    title: "VS Code",
+    title: "Visual Studio Code Quick Start",
     description: "Connect through the VS Code extension for a guided local workflow.",
     href: "/docs/getting-started/vscode-quickstart",
   },
@@ -70,13 +70,19 @@ export default function PackagesPage() {
 
   const aptCommand = buildAptInstallCommand(aptTarget, aptArch, aptPgVersion);
   const rpmCommand = buildRpmInstallCommand(rpmTarget, rpmArch, rpmPgVersion);
-  const selectedPackageName =
+  const selectedPackageNames =
     packageFamily === "apt"
-      ? `postgresql-${aptPgVersion}-documentdb`
-      : `postgresql${rpmPgVersion}-documentdb`;
+      ? `postgresql-${aptPgVersion}-documentdb + documentdb_gateway`
+      : `postgresql${rpmPgVersion}-documentdb + documentdb-gateway`;
   const selectedTargetText =
     packageFamily === "apt" ? aptTargetLabels[aptTarget] : rpmTargetLabels[rpmTarget];
   const selectedArchText = packageFamily === "apt" ? aptArch : rpmArch;
+  const selectedPgVersion = packageFamily === "apt" ? aptPgVersion : rpmPgVersion;
+  const setupCommand = `sudo documentdb-setup \\
+  --username <YOUR_USERNAME> \\
+  --password <YOUR_PASSWORD> \\
+  --pg-version ${selectedPgVersion} \\
+  --load-sample-data`;
 
   return (
     <div className="min-h-screen bg-neutral-900 py-12">
@@ -87,8 +93,8 @@ export default function PackagesPage() {
           </h1>
           <p className="mx-auto max-w-3xl text-lg text-gray-300">
             Choose Docker for the fastest local setup, or Linux packages for managed host
-            installations. The generated package commands also configure the PostgreSQL
-            dependency repositories required by DocumentDB.
+            installations. The generated package commands configure the PostgreSQL
+            dependency repositories and install the packages required by DocumentDB.
           </p>
           <div className="mt-4 flex flex-wrap justify-center gap-3 text-sm">
             <span className="rounded-full border border-green-500/30 bg-green-500/20 px-3 py-1 text-green-300">
@@ -151,7 +157,7 @@ export default function PackagesPage() {
                   href="/docs/getting-started/docker"
                   className="inline-flex items-center justify-center rounded-md border border-blue-400 bg-blue-500/10 px-4 py-2 text-sm font-semibold text-blue-200 transition-colors hover:bg-blue-500/20"
                 >
-                  Open Docker quick start →
+                  Open Docker Quick Start →
                 </Link>
               </div>
             </>
@@ -267,8 +273,8 @@ export default function PackagesPage() {
                 label={packageFamily === "apt" ? "APT" : "RPM"}
               />
               <p className="mt-3 text-sm text-gray-400">
-                Target: {selectedTargetText} · Architecture: {selectedArchText} · package name{" "}
-                <code className="text-gray-300">{selectedPackageName}</code>
+                Target: {selectedTargetText} · Architecture: {selectedArchText} · package names{" "}
+                <code className="text-gray-300">{selectedPackageNames}</code>
               </p>
               <p className="mt-2 text-sm text-gray-400">
                 The generated command adds the PostgreSQL upstream repositories that provide
@@ -276,6 +282,21 @@ export default function PackagesPage() {
                 <code className="text-gray-300">pgvector</code>, PostGIS, and{" "}
                 <code className="text-gray-300">rum</code>.
               </p>
+              <p className="mt-2 text-sm text-gray-400">
+                It also installs the PostgreSQL extension package plus the gateway package
+                required for MongoDB-compatible connections on port 10260.
+              </p>
+              <div className="mt-4 rounded-lg border border-neutral-700 bg-neutral-900/60 p-4">
+                <p className="mb-3 text-sm font-semibold text-white">
+                  Then initialize and start DocumentDB
+                </p>
+                <CommandSnippet command={setupCommand} label="Setup" />
+                <p className="mt-3 text-sm text-gray-400">
+                  Use <code className="text-gray-300">--skip-pg-init</code> and{" "}
+                  <code className="text-gray-300">--pg-port</code> if you want to attach
+                  DocumentDB to an existing PostgreSQL cluster instead of creating a new one.
+                </p>
+              </div>
               {packageFamily === "apt" ? (
                 <p className="mt-2 text-sm text-amber-300">
                   Debian 13 is now supported in the APT repository-backed install flow. Debian
@@ -435,12 +456,19 @@ export default function PackagesPage() {
               <div className="rounded-md border border-neutral-700 bg-black p-3">
                 <code className="text-xs text-green-400 sm:text-sm">
                   sudo apt update && apt search documentdb && apt-cache policy
-                  postgresql-16-documentdb
+                  postgresql-16-documentdb documentdb_gateway
                 </code>
               </div>
               <div className="rounded-md border border-neutral-700 bg-black p-3">
                 <code className="text-xs text-green-400 sm:text-sm">
-                  sudo dnf clean all && dnf search documentdb && rpm -qi postgresql16-documentdb
+                  sudo dnf clean all && dnf search documentdb && rpm -qi
+                  postgresql16-documentdb documentdb-gateway
+                </code>
+              </div>
+              <div className="rounded-md border border-neutral-700 bg-black p-3">
+                <code className="text-xs text-green-400 sm:text-sm">
+                  sudo systemctl status documentdb-gateway --no-pager && sudo journalctl -u
+                  documentdb-gateway --no-pager -n 20
                 </code>
               </div>
             </div>
@@ -453,8 +481,9 @@ export default function PackagesPage() {
               3. Connect and try it
             </h2>
             <p className="text-sm leading-6 text-gray-400">
-              Once DocumentDB is running, use port 10260 and follow one of these guides to make
-              your first connection.
+              After you run <code className="text-gray-300">documentdb-setup</code> and the
+              gateway is listening on port 10260, follow one of these guides to make your first
+              connection.
             </p>
           </div>
 

@@ -4,6 +4,16 @@ import { Sample } from '../types/Sample';
 
 export const samples: Sample[] = [
   {
+    id: 'personal-memory-mcp-ts',
+    title: 'Personal AI Memory: Cross-Platform MCP Server with DocumentDB Vector Search',
+    description: 'A TypeScript MCP server that gives any AI assistant — Copilot CLI, Claude, Gemini — persistent personalized memory backed by DocumentDB. Uses a 4-layer retrieval strategy: cosmosSearch vector similarity, full-text search indexes, array tag queries, and regex fallback. Demonstrates DocumentDB\'s vector search (pgvector), MongoDB wire protocol compatibility, text indexes, atomic update operators, and flexible document schema in a practical AI application.',
+    language: 'TypeScript',
+    industry: 'AI/ML',
+    difficulty: 'Intermediate',
+    tags: ['MCP', 'AI Memory', 'Vector Search', 'Full-Text Search', 'Text Index', 'Express', 'RAG', 'DocumentDB OSS', 'Open Source'],
+    githubUrl: 'https://github.com/documentdb/documentdb-samples-gallery/tree/main/personal-memory-mcp-ts',
+  },
+  {
     id: 'hotel-agent-ts',
     title: 'Hotel Recommendation Agent: RAG with Native Vector Search and LLM Synthesizer in TypeScript',
     description: 'A TypeScript app that uses DocumentDB OSS native vector search to retrieve semantically similar hotels from a natural-language query, then passes the results to a LlamaIndex synthesizer agent (llama3.2 via Ollama) to generate a concise, comparative recommendation. Runs entirely on open-source tools with no cloud accounts required.',
@@ -66,11 +76,11 @@ export const samples: Sample[] = [
   {
     id: 'activity-log-fastapi-py',
     title: 'Activity Log & Notification Service: Real-Time Event Ingestion with FastAPI, Beanie, and DocumentDB',
-    description: 'A production-style async Python backend that ingests high-volume activity events via FastAPI, stores them in DocumentDB using the Beanie ODM over Motor, and exposes endpoints to query recent activities, compute server-side aggregation statistics ($facet pipeline), and stream real-time ERROR alerts to clients over WebSockets.',
+    description: 'A production-style async Python backend that ingests high-volume activity events via FastAPI, stores them in DocumentDB using the Beanie ODM (backed by PyMongo async), and exposes endpoints to query recent activities, compute server-side aggregation statistics ($facet pipeline), and stream real-time ERROR alerts to clients over WebSockets.',
     language: 'Python',
     industry: 'DevOps / Observability',
     difficulty: 'Intermediate',
-    tags: ['FastAPI', 'Beanie', 'Motor', 'REST API', 'WebSocket', 'Aggregation', 'DocumentDB OSS', 'Open Source'],
+    tags: ['FastAPI', 'Beanie', 'PyMongo', 'REST API', 'WebSocket', 'Aggregation', 'DocumentDB OSS', 'Open Source'],
     githubUrl: 'https://github.com/documentdb/documentdb-samples-gallery/tree/main/activity-log-fastapi-py',
   }
 ];

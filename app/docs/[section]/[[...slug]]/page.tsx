@@ -50,9 +50,14 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function ArticlePage({ params }: PageProps) {
     const { section, slug = [] } = await params;
+    const currentSlug = slug[slug.length - 1];
 
-    if (section === 'getting-started' && slug[slug.length - 1] === 'prebuilt-packages') {
+    if (section === 'getting-started' && currentSlug === 'prebuilt-packages') {
         redirect('/docs/getting-started/packages');
+    }
+
+    if (section === 'getting-started' && currentSlug === 'vscode-extension-guide') {
+        redirect('/docs/getting-started/vscode-quickstart');
     }
 
     const articleData = getArticleByPath(section, slug);
@@ -153,14 +158,31 @@ export default async function ArticlePage({ params }: PageProps) {
 
                         {showInstallPrimer && (
                             <section className="mb-8 rounded-xl border border-blue-500/30 bg-blue-500/5 p-5">
-                                <h2 className="text-xl font-semibold text-white">Install DocumentDB first</h2>
+                                <h2 className="text-xl font-semibold text-white">Install and verify DocumentDB</h2>
                                 <p className="mt-2 text-sm text-gray-300">
-                                    Start with Docker for the fastest setup, or choose Linux packages for persistent servers.
+                                    Start with Docker for the fastest setup, or choose Linux packages for persistent servers. Then verify the connection with mongosh before moving to a driver quick start.
                                 </p>
                                 <div className="mt-4 grid gap-4 lg:grid-cols-2">
                                     <div className="rounded-lg border border-neutral-700 bg-neutral-900/60 p-4">
                                         <p className="mb-3 text-sm font-semibold text-white">Quick run with Docker</p>
                                         <CommandSnippet command={dockerQuickRunCommand} label="Docker" />
+                                        <div className="mt-4 flex flex-wrap gap-3">
+                                            <Link
+                                                href="/docs/getting-started/mongo-shell-quickstart"
+                                                className="inline-flex items-center justify-center rounded-md border border-neutral-600 px-4 py-2 text-sm font-semibold text-gray-200 transition-colors hover:border-neutral-500 hover:bg-neutral-800"
+                                            >
+                                                Mongo Shell Quick Start
+                                            </Link>
+                                            <Link
+                                                href="/docs/getting-started/mongo-shell-quickstart"
+                                                className="inline-flex items-center justify-center rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-400"
+                                            >
+                                                Mongo Shell Quick Start
+                                            </Link>
+                                        </div>
+                                        <p className="mt-3 text-sm text-gray-400">
+                                            Recommended first path: Docker -&gt; Mongo Shell Quick Start -&gt; Node.js Quick Start or Python Quick Start.
+                                        </p>
                                     </div>
                                     <div className="rounded-lg border border-neutral-700 bg-neutral-900/60 p-4">
                                         <p className="text-sm font-semibold text-white">Install from Linux packages</p>
@@ -172,7 +194,7 @@ export default async function ArticlePage({ params }: PageProps) {
                                                 href="/docs/getting-started/docker"
                                                 className="inline-flex items-center justify-center rounded-md border border-neutral-600 px-4 py-2 text-sm font-semibold text-gray-200 transition-colors hover:border-neutral-500 hover:bg-neutral-800"
                                             >
-                                                Docker guide
+                                                Docker Quick Start
                                             </Link>
                                             <Link
                                                 href="/packages"
@@ -184,7 +206,7 @@ export default async function ArticlePage({ params }: PageProps) {
                                                 href="/docs/getting-started/packages"
                                                 className="inline-flex items-center justify-center rounded-md border border-neutral-600 px-4 py-2 text-sm font-semibold text-gray-200 transition-colors hover:border-neutral-500 hover:bg-neutral-800"
                                             >
-                                                Linux packages docs
+                                                Linux Packages Quick Start
                                             </Link>
                                         </div>
                                     </div>
