@@ -12,6 +12,12 @@ const dockerQuickRunCommand = `docker run -dt --name documentdb \\
   --username <YOUR_USERNAME> \\
   --password <YOUR_PASSWORD>`;
 
+const primerPrimaryLinkClass =
+    "inline-flex w-full items-center justify-center rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-400 sm:w-auto";
+
+const primerSecondaryLinkClass =
+    "font-semibold text-blue-300 transition-colors hover:text-blue-200";
+
 export async function generateStaticParams() {
     const paths = getAllArticlePaths();
 
@@ -157,57 +163,123 @@ export default async function ArticlePage({ params }: PageProps) {
                         {frontmatter.layout === 'coming-soon' && <ComingSoon />}
 
                         {showInstallPrimer && (
-                            <section className="mb-8 rounded-xl border border-blue-500/30 bg-blue-500/5 p-5">
-                                <h2 className="text-xl font-semibold text-white">Install and verify DocumentDB</h2>
-                                <p className="mt-2 text-sm text-gray-300">
-                                    Start with Docker for the fastest setup, or choose Linux packages for persistent servers. Then verify the connection with mongosh before moving to a driver quick start.
+                            <section className="mb-8 rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-500/10 via-neutral-900/90 to-neutral-900/90 p-6">
+                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-200">
+                                    Recommended flow
                                 </p>
-                                <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                                    <div className="rounded-lg border border-neutral-700 bg-neutral-900/60 p-4">
-                                        <p className="mb-3 text-sm font-semibold text-white">Quick run with Docker</p>
-                                        <CommandSnippet command={dockerQuickRunCommand} label="Docker" />
-                                        <div className="mt-4 flex flex-wrap gap-3">
-                                            <Link
-                                                href="/docs/getting-started/mongo-shell-quickstart"
-                                                className="inline-flex items-center justify-center rounded-md border border-neutral-600 px-4 py-2 text-sm font-semibold text-gray-200 transition-colors hover:border-neutral-500 hover:bg-neutral-800"
-                                            >
-                                                Mongo Shell Quick Start
-                                            </Link>
-                                            <Link
-                                                href="/docs/getting-started/mongo-shell-quickstart"
-                                                className="inline-flex items-center justify-center rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-400"
-                                            >
-                                                Mongo Shell Quick Start
-                                            </Link>
+                                <h2 className="mt-2 text-2xl font-semibold text-white">
+                                    Install and verify DocumentDB
+                                </h2>
+                                <p className="mt-2 max-w-3xl text-sm leading-6 text-gray-300">
+                                    Choose one install path first. After DocumentDB is running, verify the
+                                    connection with mongosh before moving to a driver quick start.
+                                </p>
+                                <div className="mt-5 rounded-xl border border-neutral-800 bg-neutral-950/40 p-4">
+                                    <div className="mb-4 flex items-start gap-3">
+                                        <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-blue-400/30 bg-blue-500/10 text-xs font-semibold text-blue-200">
+                                            1
+                                        </span>
+                                        <div>
+                                            <p className="text-sm font-semibold text-white">
+                                                Choose an install path
+                                            </p>
+                                            <p className="mt-1 text-sm text-gray-400">
+                                                Use Docker for the fastest local setup, or Linux packages for a
+                                                persistent host installation.
+                                            </p>
                                         </div>
-                                        <p className="mt-3 text-sm text-gray-400">
-                                            Recommended first path: Docker -&gt; Mongo Shell Quick Start -&gt; Node.js Quick Start or Python Quick Start.
-                                        </p>
                                     </div>
-                                    <div className="rounded-lg border border-neutral-700 bg-neutral-900/60 p-4">
-                                        <p className="text-sm font-semibold text-white">Install from Linux packages</p>
-                                        <p className="mt-2 text-sm text-gray-400">
-                                            Use the package finder to generate the exact apt/rpm command for your distro, architecture, and PostgreSQL version.
-                                        </p>
-                                        <div className="mt-4 flex flex-wrap gap-3">
-                                            <Link
-                                                href="/docs/getting-started/docker"
-                                                className="inline-flex items-center justify-center rounded-md border border-neutral-600 px-4 py-2 text-sm font-semibold text-gray-200 transition-colors hover:border-neutral-500 hover:bg-neutral-800"
-                                            >
-                                                Docker Quick Start
-                                            </Link>
-                                            <Link
-                                                href="/packages"
-                                                className="inline-flex items-center justify-center rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-400"
-                                            >
-                                                Open package finder
-                                            </Link>
-                                            <Link
-                                                href="/docs/getting-started/packages"
-                                                className="inline-flex items-center justify-center rounded-md border border-neutral-600 px-4 py-2 text-sm font-semibold text-gray-200 transition-colors hover:border-neutral-500 hover:bg-neutral-800"
-                                            >
-                                                Linux Packages Quick Start
-                                            </Link>
+                                    <div className="grid gap-4 lg:grid-cols-2">
+                                        <div className="rounded-xl border border-neutral-800 bg-neutral-900/70 p-4">
+                                            <p className="text-sm font-semibold text-white">
+                                                Run locally with Docker
+                                            </p>
+                                            <p className="mt-2 text-sm text-gray-400">
+                                                Best for evaluation, local development, and quick testing.
+                                            </p>
+                                            <div className="mt-4">
+                                                <CommandSnippet command={dockerQuickRunCommand} label="Docker" />
+                                            </div>
+                                            <div className="mt-4">
+                                                <Link
+                                                    href="/docs/getting-started/docker"
+                                                    className={primerPrimaryLinkClass}
+                                                >
+                                                    Docker Quick Start
+                                                </Link>
+                                            </div>
+                                        </div>
+                                        <div className="rounded-xl border border-neutral-800 bg-neutral-900/70 p-4">
+                                            <p className="text-sm font-semibold text-white">
+                                                Install from Linux packages
+                                            </p>
+                                            <p className="mt-2 text-sm text-gray-400">
+                                                Use the repository-backed package flow when you want a persistent
+                                                server install. Generate the exact apt or rpm command with the{" "}
+                                                <Link href="/packages" className={primerSecondaryLinkClass}>
+                                                    Package Finder
+                                                </Link>
+                                                .
+                                            </p>
+                                            <div className="mt-4">
+                                                <Link
+                                                    href="/docs/getting-started/packages"
+                                                    className={primerPrimaryLinkClass}
+                                                >
+                                                    Linux Packages Quick Start
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mt-4 rounded-xl border border-neutral-800 bg-neutral-950/40 p-4">
+                                    <div className="flex items-start gap-3">
+                                        <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-blue-400/30 bg-blue-500/10 text-xs font-semibold text-blue-200">
+                                            2
+                                        </span>
+                                        <div className="min-w-0">
+                                            <p className="text-sm font-semibold text-white">
+                                                Recommended: verify with mongosh
+                                            </p>
+                                            <p className="mt-1 text-sm text-gray-400">
+                                                This is the fastest shared validation path after either install
+                                                option because it confirms authentication, TLS, and a working
+                                                endpoint before you add editor or driver setup. If you already
+                                                know your target workflow, you can skip this and continue directly
+                                                with VS Code or a driver quick start.
+                                            </p>
+                                            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+                                                <Link
+                                                    href="/docs/getting-started/mongo-shell-quickstart"
+                                                    className={primerPrimaryLinkClass}
+                                                >
+                                                    Mongo Shell Quick Start
+                                                </Link>
+                                                <p className="text-sm text-gray-400">
+                                                    Or go directly to{" "}
+                                                    <Link
+                                                        href="/docs/getting-started/vscode-quickstart"
+                                                        className={primerSecondaryLinkClass}
+                                                    >
+                                                        Visual Studio Code Quick Start
+                                                    </Link>
+                                                    ,{" "}
+                                                    <Link
+                                                        href="/docs/getting-started/nodejs-setup"
+                                                        className={primerSecondaryLinkClass}
+                                                    >
+                                                        Node.js Quick Start
+                                                    </Link>{" "}
+                                                    or{" "}
+                                                    <Link
+                                                        href="/docs/getting-started/python-setup"
+                                                        className={primerSecondaryLinkClass}
+                                                    >
+                                                        Python Quick Start
+                                                    </Link>
+                                                    .
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

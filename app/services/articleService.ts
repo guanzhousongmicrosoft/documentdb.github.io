@@ -863,6 +863,10 @@ function normalizeArticle(section: string, file: string, frontmatter: Record<str
     normalizedContent = updateGettingStartedIndexContent(normalizedContent);
   }
 
+  if (section === 'getting-started' && file === 'azure-setup') {
+    normalizedContent = normalizedContent.replace(/Micrtosoft/g, 'Microsoft');
+  }
+
   if (section === 'documentdb-local' && file === 'index') {
     normalizedContent = updateDocumentDbLocalContent(normalizedContent);
   }
