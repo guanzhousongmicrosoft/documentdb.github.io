@@ -90,25 +90,25 @@ function getMarkdownComponents() {
       </h4>
     ),
 
-    // Unordered lists with blue round bullets
-    ul: ({ depth, ...props }: any) => (
+    // Unordered lists with consistent nested indentation
+    ul: ({ ...props }: any) => (
       <ul
-        className={depth > 0 ? "ml-6 space-y-2 text-gray-300 mb-4 list-disc list-inside" : "space-y-2 text-gray-300 mb-4 list-disc list-inside"}
+        className="mb-4 list-disc space-y-2 pl-6 text-gray-300 [&_ul]:mb-0 [&_ul]:mt-2 [&_ul]:list-[circle] [&_ul]:pl-6 [&_ol]:mb-0 [&_ol]:mt-2 [&_ol]:pl-6"
         {...props}
       />
     ),
 
-    // Ordered lists with blue numbers
+    // Ordered lists with consistent nested indentation
     ol: ({ ...props }) => (
       <ol
-        className="space-y-2 text-gray-300 mb-4 list-decimal list-inside"
+        className="mb-4 list-decimal space-y-2 pl-6 text-gray-300 [&_ul]:mb-0 [&_ul]:mt-2 [&_ul]:pl-6 [&_ol]:mb-0 [&_ol]:mt-2 [&_ol]:pl-6"
         {...props}
       />
     ),
 
     // List items
     li: ({ ...props }) => (
-      <li className="marker:text-blue-400 marker:mr-3 marker:flex-shrink-0 [&>p]:m-0 [&>p]:inline" {...props} />
+      <li className="leading-relaxed marker:text-blue-400 [&>p]:m-0 [&>p]:inline [&>ul]:mb-0 [&>ul]:mt-2 [&>ol]:mb-0 [&>ol]:mt-2" {...props} />
     ),
 
     // Inline code
