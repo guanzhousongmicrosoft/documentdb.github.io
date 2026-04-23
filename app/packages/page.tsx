@@ -50,6 +50,13 @@ const nextGuides = [
 ] as const;
 
 const allReleasesUrl = "https://github.com/documentdb/documentdb/releases";
+const currentAptVersionExample = "0.110-0";
+const currentRpmVersionExample = "0.110.0-1.el9";
+const currentReleaseExamples = [
+  `ubuntu22.04-postgresql-18-documentdb_${currentAptVersionExample}_amd64.deb`,
+  `deb13-postgresql-18-documentdb_${currentAptVersionExample}_amd64.deb`,
+  `rhel9-postgresql18-documentdb-${currentRpmVersionExample}.x86_64.rpm`,
+] as const;
 
 export default function PackagesPage() {
   const [method, setMethod] = useState<InstallMethod>("docker");
@@ -374,8 +381,8 @@ export default function PackagesPage() {
                 Use the commands below to discover available versions before pinning. Replace{" "}
                 <code className="text-gray-300">&lt;VERSION&gt;</code> with the version string
                 shown by the list command (e.g.{" "}
-                <code className="text-gray-300">0.109-0</code> for APT,{" "}
-                <code className="text-gray-300">0.109.0-1.el9</code> for RPM).
+                <code className="text-gray-300">{currentAptVersionExample}</code> for APT,{" "}
+                <code className="text-gray-300">{currentRpmVersionExample}</code> for RPM).
               </p>
               <div>
                 <p className="mb-1 text-xs font-semibold text-gray-400">APT — list then pin</p>
@@ -429,9 +436,9 @@ export default function PackagesPage() {
                 GitHub. Recent release examples:
               </p>
               <div className="rounded-md border border-neutral-700 bg-black p-3 text-xs text-green-400 sm:text-sm">
-                <div>ubuntu22.04-postgresql-18-documentdb_0.109-0_amd64.deb</div>
-                <div className="mt-1">deb13-postgresql-18-documentdb_0.109-0_amd64.deb</div>
-                <div className="mt-1">rhel9-postgresql18-documentdb-0.109.0-1.el9.x86_64.rpm</div>
+                <div>{currentReleaseExamples[0]}</div>
+                <div className="mt-1">{currentReleaseExamples[1]}</div>
+                <div className="mt-1">{currentReleaseExamples[2]}</div>
               </div>
               <p className="text-xs text-gray-500">
                 Swap the distribution, PostgreSQL version, architecture, and version string to match

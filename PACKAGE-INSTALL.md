@@ -162,9 +162,9 @@ GitHub Releases contains `.deb` and `.rpm` assets for every published combinatio
 Examples:
 
 ```text
-ubuntu22.04-postgresql-18-documentdb_0.109-0_amd64.deb
-deb13-postgresql-18-documentdb_0.109-0_amd64.deb
-rhel9-postgresql18-documentdb-0.109.0-1.el9.x86_64.rpm
+ubuntu22.04-postgresql-18-documentdb_0.110-0_amd64.deb
+deb13-postgresql-18-documentdb_0.110-0_amd64.deb
+rhel9-postgresql18-documentdb-0.110.0-1.el9.x86_64.rpm
 ```
 
 - GitHub Releases: https://github.com/documentdb/documentdb/releases
