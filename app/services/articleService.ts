@@ -113,7 +113,7 @@ Install DocumentDB on Debian, Ubuntu, or RHEL-family hosts with repository-backe
 
 Use the [Package Finder](/packages) to generate the exact install command for your distro, architecture, and PostgreSQL version.
 
-> The generated command installs both the PostgreSQL extension package and the gateway package required for MongoDB-compatible connections on port \`10260\`.
+> The generated command installs the DocumentDB PostgreSQL extension package.
 >
 > The repository-backed install commands currently cover Ubuntu 22.04/24.04, Debian 11/12/13, and RHEL-family 8/9 systems. Debian 11 currently resolves PostgreSQL 16 and 17 in the repository-backed flow.
 
@@ -191,7 +191,7 @@ Use \`--data-dir\` and \`--pg-owner\` when your environment needs explicit Postg
 
 If something does not work on the first try:
 
-- Confirm both packages are installed: \`postgresql-<PG>-documentdb\` plus \`documentdb_gateway\` on APT, or \`postgresql<PG>-documentdb\` plus \`documentdb-gateway\` on RPM
+- Confirm the package is installed: \`postgresql-<PG>-documentdb\` on APT, or \`postgresql<PG>-documentdb\` on RPM
 - Re-run \`documentdb-setup --help\` to review cluster, port, and sample-data options
 - Use \`sudo documentdb-setup --verbose ...\` for more detailed setup output
 - Check the gateway service with \`sudo systemctl status documentdb-gateway\`

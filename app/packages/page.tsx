@@ -79,8 +79,8 @@ export default function PackagesPage() {
   const rpmCommand = buildRpmInstallCommand(rpmTarget, rpmArch, rpmPgVersion);
   const selectedPackageNames =
     packageFamily === "apt"
-      ? `postgresql-${aptPgVersion}-documentdb + documentdb_gateway`
-      : `postgresql${rpmPgVersion}-documentdb + documentdb-gateway`;
+      ? `postgresql-${aptPgVersion}-documentdb`
+      : `postgresql${rpmPgVersion}-documentdb`;
   const selectedTargetText =
     packageFamily === "apt" ? aptTargetLabels[aptTarget] : rpmTargetLabels[rpmTarget];
   const selectedArchText = packageFamily === "apt" ? aptArch : rpmArch;
@@ -290,8 +290,7 @@ export default function PackagesPage() {
                 <code className="text-gray-300">rum</code>.
               </p>
               <p className="mt-2 text-sm text-gray-400">
-                It also installs the PostgreSQL extension package plus the gateway package
-                required for MongoDB-compatible connections on port 10260.
+                It also installs the DocumentDB PostgreSQL extension package.
               </p>
               <div className="mt-4 rounded-lg border border-neutral-700 bg-neutral-900/60 p-4">
                 <p className="mb-3 text-sm font-semibold text-white">
@@ -463,19 +462,13 @@ export default function PackagesPage() {
               <div className="rounded-md border border-neutral-700 bg-black p-3">
                 <code className="text-xs text-green-400 sm:text-sm">
                   sudo apt update && apt search documentdb && apt-cache policy
-                  postgresql-16-documentdb documentdb_gateway
+                  postgresql-16-documentdb
                 </code>
               </div>
               <div className="rounded-md border border-neutral-700 bg-black p-3">
                 <code className="text-xs text-green-400 sm:text-sm">
                   sudo dnf clean all && dnf search documentdb && rpm -qi
-                  postgresql16-documentdb documentdb-gateway
-                </code>
-              </div>
-              <div className="rounded-md border border-neutral-700 bg-black p-3">
-                <code className="text-xs text-green-400 sm:text-sm">
-                  sudo systemctl status documentdb-gateway --no-pager && sudo journalctl -u
-                  documentdb-gateway --no-pager -n 20
+                  postgresql16-documentdb
                 </code>
               </div>
             </div>
@@ -488,8 +481,7 @@ export default function PackagesPage() {
               3. Connect and try it
             </h2>
             <p className="text-sm leading-6 text-gray-400">
-              After you run <code className="text-gray-300">documentdb-setup</code> and the
-              gateway is listening on port 10260, follow one of these guides to make your first
+              After you run <code className="text-gray-300">documentdb-setup</code>, follow one of these guides to make your first
               connection.
             </p>
           </div>

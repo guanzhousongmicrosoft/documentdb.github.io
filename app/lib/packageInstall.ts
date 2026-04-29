@@ -53,7 +53,7 @@ echo "deb [signed-by=/usr/share/keyrings/postgresql.gpg] https://apt.postgresql.
 curl -fsSL https://documentdb.io/documentdb-archive-keyring.gpg | sudo gpg --dearmor --yes -o /usr/share/keyrings/documentdb-archive-keyring.gpg && \\
 echo "deb [arch=${aptArch} signed-by=/usr/share/keyrings/documentdb-archive-keyring.gpg] https://documentdb.io/deb stable ${aptTarget}" | sudo tee /etc/apt/sources.list.d/documentdb.list >/dev/null && \\
 sudo apt update && \\
-sudo apt install -y postgresql-${aptPgVersion}-documentdb documentdb_gateway`;
+sudo apt install -y postgresql-${aptPgVersion}-documentdb`;
 }
 
 export function buildRpmInstallCommand(
@@ -78,5 +78,5 @@ printf '%s\\n' \\
   'enabled=1' \\
   'gpgcheck=1' \\
   'gpgkey=https://documentdb.io/documentdb-archive-keyring.gpg' | sudo tee /etc/yum.repos.d/documentdb.repo >/dev/null && \\
-sudo dnf install -y postgresql${rpmPgVersion}-documentdb documentdb-gateway`;
+sudo dnf install -y postgresql${rpmPgVersion}-documentdb`;
 }
